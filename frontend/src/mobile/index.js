@@ -9,7 +9,6 @@ import ResultPage from './views/ResultPage';
 
 export default ({match}) => (
   <div>
-    Mobile
     <Route exact path={`${match.url}`} component={StartPage}/>
     <Route path={`${match.url}/selection`} component={SelectionPageSwing}/>
     <Route path={`${match.url}/result`} component={ResultPage}/>

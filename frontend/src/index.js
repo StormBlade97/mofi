@@ -2,6 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './main';
 import registerServiceWorker from './registerServiceWorker';
+import { ThemeProvider } from 'styled-components';
+import styledComponentTheme from './theme';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { orange, indigo } from 'material-ui/colors';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const muiTheme = createMuiTheme({
+  palette: {
+    primary: orange, // Purple and green play nicely together.
+    secondary: orange
+  },
+});
+
+const Root = props => (
+    <MuiThemeProvider theme={muiTheme}>
+        <ThemeProvider theme={styledComponentTheme}>
+            <App></App>
+        </ThemeProvider>
+    </MuiThemeProvider>
+)
+
+ReactDOM.render(<Root />, document.getElementById('root'));
 registerServiceWorker();

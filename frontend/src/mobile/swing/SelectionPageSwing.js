@@ -4,22 +4,12 @@ import Swing, { Stack, Card, Direction } from './ReactSwing';
 
 import './SelectionPageSwing.scss';
 
-const movies = [
-  {
-    title: "Foo",
-    src: "http://authors.appadvice.com/wp-content/appadvice-v2-media/2015/08/Popcorn-Movies_fc3538c493404ecf8c7071a2641b3626.jpg"
-  },
-  {
-    title: "Foo2",
-    src: "http://www.destinflorida.com/wp-content/uploads/2015/01/santa-rosa-mall-theater.jpeg"
-  },
-  {
-    title: "Foo3",
-    src: "https://www.welovesolo.com/wp-content/uploads/vector/07/Film-and-movie-4.jpg"
-  },
-];
+import {observer} from 'mobx-react';
 
-export default class App extends Component {
+import MovieStore from './MovieStore';
+
+@observer
+class App extends Component {
     constructor(props, context) {
       super(props, context);
 
@@ -37,7 +27,21 @@ export default class App extends Component {
     }
     leftSwipe = () => {
       console.log('Swing.DIRECTION', Swing.DIRECTION);
-      this.swipeCard(Swing.DIRECTION.LEFT);
+      //this.swipeCard(Swing.DIRECTION.LEFT);
+      console.log("foo")
+      MovieStore.movies.push({
+        title: "Foo222",
+        src: "https://thenypost.files.wordpress.com/2014/11/movietheater131050-525x350.jpg?quality=90&strip=all&w=664&h=441&crop=1"
+      });
+    }
+    throwout = (e) => {
+      MovieStore.movies.shift();
+      console.log(this.state.stack)
+      if (e.throwDirection === Swing.DIRECTION.LEFT) {
+        console.log("left", e)
+      } else if (e.throwDirection === Swing.DIRECTION.RIGHT) {
+        console.log("right", e)
+      }
     }
     swipeCard(direction) {
         // Swing Component Childrens refs
@@ -65,10 +69,10 @@ export default class App extends Component {
                         setStack={(stack)=> this.setState({stack:stack})}
                         ref="stack"
                         config={this.swingConfig}
-                        throwout={(e)=>console.log('throwout',e)}
+                        throwout={this.throwout}
                     >
-                      { movies.map(m =>
-                        <div className="card">
+                      { MovieStore.movies.map(m =>
+                        <div className="card" key={m.src}>
                           <img src={m.src} />
                           <div>{m.title} </div>
                         </div>
@@ -87,3 +91,4 @@ export default class App extends Component {
         )
     }
 }
+export default App;

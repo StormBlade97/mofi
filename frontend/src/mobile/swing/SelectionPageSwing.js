@@ -42,6 +42,7 @@ class App extends Component {
       } else if (e.throwDirection === Swing.DIRECTION.RIGHT) {
         console.log("right", e)
       }
+      MovieStore.addRating();
     }
     swipeCard(direction) {
         // Swing Component Childrens refs

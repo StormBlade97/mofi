@@ -33,6 +33,7 @@ class MovieStore
     })
   }
 
+  @action
   async addRating(movie) {
     console.log("Adding rating for movie", movie);
     const newQueue = await fetch(`/session/${this.sessionCode}/ratings`, {
@@ -42,10 +43,6 @@ class MovieStore
       })
     })
     console.log("New Queue", newQueue);
-  }
-
-  @action updateQueue(queue) {
-    this.movies = queue;
   }
 }
 

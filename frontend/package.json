@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "atomic-components": "file:src/atomic-components",
+    "material-ui": "^1.0.0-beta.21",
+    "styled-components": "^2.2.3",
     "hammerjs": "^2.0.8",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",

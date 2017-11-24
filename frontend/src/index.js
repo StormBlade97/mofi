@@ -10,8 +10,8 @@ import { orange, indigo } from 'material-ui/colors';
 
 const muiTheme = createMuiTheme({
   palette: {
-    primary: orange, // Purple and green play nicely together.
-    secondary: orange
+    primary: orange,
+    secondary: indigo
   },
 });
 

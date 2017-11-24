@@ -1,10 +1,12 @@
 Backend routes:
 
+See [https://github.com/wilzbach/mofi/issues/15#issuecomment-346887203]()
+
 Mobile:
-- GET /:code/next-movie -> Movie (only movie_id)
-- POST /:code/ratings (an array of movie objects, ids, ....)
+- GET /session/:code/next-movie   ->  Movie (only movie_id)
+- POST /session/:code/ratings (an array of movie objects, ids, ....)
 
 TV:
-- GET /new-session -> session's code (do not display code yet)
-- POST /:code/mood -> (should now display code on TV client)
-- GET /:code/recommendations -> [10 x AggregateMovieRating (fields described above)]
+- GET /session/new    ->    session's code (do not display code yet)
+- POST /session/:code/mood   ->   (should now display code on TV client)
+- GET /session/:code/recommendations -> [10 x AggregateMovieRating]

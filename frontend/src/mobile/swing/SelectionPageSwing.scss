@@ -23,18 +23,17 @@ code {
 }
 
 #viewport .stack {
-	width: 200px;
+	width: 300px;
 	height: 300px;
-	background: #ED5D52;
 	position: absolute;
 	top: 100px;
 	left: 50%;
-	margin-left: -100px;
+	margin-left: -150px;
 	border-radius: 10px;
 }
 
 #viewport .card {
-	width: 200px;
+	width: 300px;
 	height: 300px;
 	list-style: none;
 	background: #fff;
@@ -43,10 +42,8 @@ code {
 	top: 0;
 	left: 0;
 	box-shadow: 0 0 2px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(0, 0, 0, 0.2);
-	line-height: 300px;
 	text-align: center;
 	font-size: 100px;
-	border: 10px solid #ECECEC;
 	box-sizing: border-box;
 	cursor: default;
 }
@@ -59,4 +56,16 @@ code {
 #viewport .in-deck:nth-child(2) {
 	top: 4px;
 	transform: translate(-4px, -2px) rotate(-1deg);
+}
+
+.card img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.card div {
+	position: relative;
+	margin-top: -50px;
+	font-size: 20px;
 }

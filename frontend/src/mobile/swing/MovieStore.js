@@ -1,11 +1,16 @@
 import {
   observable,
   autorun,
+  action,
 } from 'mobx';
+
+import fetch from '../../fetch';
 
 
 class MovieStore
 {
+
+  @observable sessionCode = "afancysessioncode";
 
   @observable movies = [
     {
@@ -21,6 +26,27 @@ class MovieStore
       src: "https://www.welovesolo.com/wp-content/uploads/vector/07/Film-and-movie-4.jpg"
     },
   ];
+
+  async refreshMovies() {
+    await fetch(`/session/${this.sessionCode}/queue`, {
+
+    })
+  }
+
+  async addRating(movie) {
+    console.log("Adding rating for movie", movie);
+    const newQueue = await fetch(`/session/${this.sessionCode}/ratings`, {
+      method: 'post',
+      body: JSON.stringify({
+        id: "foo"
+      })
+    })
+    console.log("New Queue", newQueue);
+  }
+
+  @action updateQueue(queue) {
+    this.movies = queue;
+  }
 }
 
 const store = new MovieStore()

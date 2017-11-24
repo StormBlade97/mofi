@@ -35,7 +35,7 @@ class App extends Component {
       });
     }
     throwout = (e) => {
-      MovieStore.movies.shift();
+      MovieStore.movies.unshift();
       console.log(this.state.stack)
       if (e.throwDirection === Swing.DIRECTION.LEFT) {
         console.log("left", e)

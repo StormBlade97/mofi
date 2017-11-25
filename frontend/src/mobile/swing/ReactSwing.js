@@ -105,10 +105,10 @@ class Swing extends Component {
     //});
 
     // TOOD: pretty sure this isn't needed
-    if (newChilds.length > 0) {
-      this.syncEvents(this, this.state.stack);
-      this.syncStack();
-    }
+    //if (newChilds.length > 0) {
+      //this.syncEvents(this, this.state.stack);
+      //this.syncStack();
+    //}
   }
 
   componentWillUnmount() {

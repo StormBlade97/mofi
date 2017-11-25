@@ -9,6 +9,21 @@ import {observer} from 'mobx-react';
 
 import MovieStore from './MovieStore';
 
+import styled, { keyframes } from 'styled-components';
+import { bounce, fadeOut, bounceOut, flipInX, flipOutX } from 'react-animations';
+
+const bounceAnimation = keyframes`${flipInX}`;
+
+const BouncyDiv = styled.div`
+  animation: 0.5s ${bounceAnimation};
+`;
+
+//const MainCardDiv = styled.div;
+//`
+  //animation: 0.5s ${keyframes`${flipOutX}`};
+//`;
+
+
 @observer
 class App extends Component {
     constructor(props, context) {
@@ -52,6 +67,8 @@ class App extends Component {
       MovieStore.addRating(toJS(movie), e.throwDirection);
     }
     swipeCard(direction) {
+      // reset detail
+      MovieStore.movies[0].inDetail = false;
       // Swing Component Childrens refs
       const cardRefs = Object.keys(this.refs.stack.refs);
       cardRefs.sort();
@@ -62,9 +79,9 @@ class App extends Component {
 
       card.throwOut(100, 200, direction);
     }
-    openDetails = () => {
+    toggleDetails = () => {
       console.log("show details");
-      this.setState({showDetails: true});
+      MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
     }
     render() {
         return (
@@ -77,12 +94,26 @@ class App extends Component {
                         ref="stack"
                         config={this.swingConfig}
                         throwout={this.throwout}
-                        onClick={this.openDetails}
+                        onClick={this.toggleDetails}
                     >
                       { MovieStore.moviesReversed.map(m =>
                         <div className="card" key={m.id}>
-                          <img alt="Poster" src={m.details.poster_url} />
-                          <div>{m.details.title} </div>
+                          {m.inDetail ?
+                            <BouncyDiv className="card-details">
+                                <h4>
+                                  Details
+                                </h4>
+                                <br />
+                                { MovieStore.movies[0].details.title}
+                                <br />
+                                { MovieStore.movies[0].details.overview}
+                            </BouncyDiv>
+                          :
+                            <div>
+                              <img alt="Poster" src={m.details.poster_url} />
+                              <div>{m.details.title} </div>
+                          </div>
+                          }
                         </div>
                       )}
                     </Swing>
@@ -103,17 +134,6 @@ class App extends Component {
                     </button>
                 </div>
               }
-              { this.state.showDetails ?
-                <div className="card-details">
-                  <h4>
-                    Details
-                  </h4>
-                  <br />
-                  { MovieStore.movies[0].details.title}
-                  <br />
-                  { MovieStore.movies[0].details.overview}
-                </div>
-              : null }
             </div>
         )
     }

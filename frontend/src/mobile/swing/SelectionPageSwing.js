@@ -115,12 +115,14 @@ class App extends Component {
                                 <img alt="Poster" src={m.details.poster_url} />
                                 <Card
                                   title={ MovieStore.movies[0].details.title}
-                                  duration={"foo"} summary={"Foo"} />
+                                  subtitle={ MovieStore.movies[0].details.tagline}
+                                  duration={MovieStore.movies[0].details.runtime}
+                                  rating={MovieStore.movies[0].details.vote_average / 2}
+                                  />
                             </BouncyDiv>
                           :
                             <div>
                               <img alt="Poster" src={m.details.poster_url} />
-                              <div>{m.details.title} </div>
                           </div>
                           }
                         </div>

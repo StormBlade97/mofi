@@ -209,7 +209,12 @@ import top250 from '../lib/imdb_top250'
             })
             // .filter(movie => movie.rating > 0)
 
-        ctx.body = { usernames: session.usernames, ratings: sortedAggRatings }
+        const users = session.usernames.map(name => ({
+            name,
+            avatar_url: coolNames.find(user => name === user.name).avatar_url
+        }))
+
+        ctx.body = { users: users, ratings: sortedAggRatings }
     }
 })
 

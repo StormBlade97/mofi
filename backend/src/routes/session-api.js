@@ -37,10 +37,11 @@ import coolNames from '../lib/cool_names';
 
  let _nextMovie = async (ctx) => {
     const session = ctx.state.session
-    const { username } = ctx.request.body || ctx.request.query
+    const username = ctx.request.body.username || ctx.request.query.username
 
-    const lookedAt = session.movies_assigned.toObject().filter(m => m.username == username).map(m => m.movie_id);
+    const lookedAt = session.movies_assigned.toObject().filter(m => m.username === username).map(m => m.movie_id);
 
+    console.log(username)
     let movies = session.all_movies.toObject().filter(m => m.username === username)[0].movie_ids.filter(id => !lookedAt.includes(id));
     // console.log(movies)
     movies.sort((a, b) => {

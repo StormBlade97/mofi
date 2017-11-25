@@ -11,24 +11,22 @@ import { create, persist } from 'mobx-persist'
 import fetch from '../fetch';
 import hydrate from './hydrate';
 
-const exists = (s) => (s && s.length === 0) || false;
+const exists = (s) => (s && s.length > 0) || false;
 
 class UserStore
 {
-  @persist @observable id = "";
+  @persist @observable name = "";
   @persist @observable code = "";
   hasBeenLoaded = false;
 
   async requestNewUserId() {
-    console.log("request2", store.id, store.code, store.hasBeenLoaded)
-    if(!exists(store.id) && exists(store.code) && store.hasBeenLoaded === true) {
+    if(!exists(store.name) && exists(store.code) && store.hasBeenLoaded === true) {
       // request new ID once
       try {
       const user = await (await fetch(`/session/${store.code}/new-user`)).json();
       runInAction(() => {
-        this.id = user.id;
-        console.log(user.name);
-        this.name = user.name || "";
+        console.log(user);
+        this.name = user.name;
         // TODO: avatar
         //this.name = user.name;
       });
@@ -37,17 +35,19 @@ class UserStore
   }
   setCode(code) {
     // reset user
-    this.id = "";
     this.name = "";
     this.code = code;
   }
   // TODO: avatar and name
-  @persist @observable name = "";
   @computed get avatar_url () {
     return `https://api.adorable.io/avatars/154/${this.name}`;
   }
 
-  @persist isValid = false;
+  @persist @observable isValid = false;
+
+  @computed get isValidSession() {
+    return this.isValid && exists(this.name) && exists(this.code);
+  }
 }
 
 const store = new UserStore();
@@ -59,21 +59,19 @@ const store = new UserStore();
 //});
 
 autorun(() => {
-  console.log("request", exist(store.code), exists(store.id))
   if(exists(store.code) && !exists(store.id)) {
-    console.log("request", exists(store.id))
     store.requestNewUserId();
   }
 });
 
 autorun(async () => {
-  if(!exists(store.code.length))
+  if(!exists(store.code))
     return;
 
   let positiveResponse = false;
   try {
     const response = await (await fetch(`/session/${store.code}/valid`)).json();
-    if (Object.keys(response) > 0){
+    if (Object.keys(response).length > 0 && "code" in response){
       runInAction(() => {
         store.isValid = true;
         positiveResponse = true;

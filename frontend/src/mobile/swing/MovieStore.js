@@ -131,7 +131,7 @@ class MovieStore
       method: 'post',
       body: JSON.stringify({
         movie_id: "000",
-        user_id: UserStore.id,
+        username: UserStore.name,
         rating: "like"
       })
     })).json();

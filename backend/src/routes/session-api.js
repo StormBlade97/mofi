@@ -13,7 +13,7 @@ import coolNames from '../lib/cool_names';
  * Routes:
 
    Mobile:
-    - GET /session/:code/new-user   ->  user_id
+    - GET /session/:code/new-user   ->  username
     - GET /session/:code/next-movie   ->  Movie (only movie_id)
     - POST /session/:code/ratings (an array of movie objects, ids, ....)
 
@@ -37,11 +37,11 @@ import coolNames from '../lib/cool_names';
 
  let _nextMovie = async (ctx) => {
     const session = ctx.state.session
-    const { user_id } = ctx.request.body
+    const { username } = ctx.request.body || ctx.request.query
 
-    const lookedAt = session.movies_assigned.toObject().filter(m => m.user_id == user_id).map(m => m.movie_id);
+    const lookedAt = session.movies_assigned.toObject().filter(m => m.username == username).map(m => m.movie_id);
 
-    let movies = session.all_movies.toObject().filter(m => m.user_id === user_id)[0].movie_ids.filter(id => !lookedAt.includes(id));
+    let movies = session.all_movies.toObject().filter(m => m.username === username)[0].movie_ids.filter(id => !lookedAt.includes(id));
     // console.log(movies)
     movies.sort((a, b) => {
         let countA = session.movie_freq.filter(m => m.movie_id === a)[0].count
@@ -60,7 +60,7 @@ import coolNames from '../lib/cool_names';
 
     session.movies_assigned.push({
         movie_id: nextMovie,
-        user_id
+        username
     })
     await session.save()
 
@@ -75,22 +75,21 @@ import coolNames from '../lib/cool_names';
 
     getUserID: async (ctx) => {
         const session = ctx.state.session
-        let name;
+        let tempUser;
         do {
-          name = sample(coolNames)
-        } while(session.users.filter(u => u.name === name.name).length > 0);
+          tempUser = sample(coolNames)
+        } while(session.usernames.filter(u => u === tempUser.name).length > 0);
         // make a final copy and save
-        const user = cloneDeep(name);
-        user.id = `user+${codeGen()}+${codeGen()}`;
-        session.users.push(user)
+        const dbUser = tempUser.name
+        session.usernames.push(dbUser)
         await session.save()
-        ctx.body = user
+        ctx.body = tempUser
     },
 
     createSession: async  (ctx) => {
         let session = new MovieSession({  })
         session.code = codeGen()
-        session.users = [];
+        session.usernames = [];
         await session.save()
         ctx.body = session.code
     },
@@ -110,11 +109,11 @@ import coolNames from '../lib/cool_names';
 
     addRating: async  (ctx) => {
         const session = ctx.state.session
-        const { movie_id, user_id, rating } = ctx.request.body
+        const { movie_id, username, rating } = ctx.request.body
 
         let ratingObj = {
             movie_id,
-            user_id,
+            username,
             rating
         }
         session.movie_ratings.push(ratingObj)
@@ -129,7 +128,7 @@ import coolNames from '../lib/cool_names';
 
     setMovies: async (ctx) => {
         const session = ctx.state.session
-        let { user_id, movie_ids } = ctx.request.body
+        let { username, movie_ids } = ctx.request.body
 
         if(!Array.isArray(movie_ids)) {
             movie_ids = [movie_ids]
@@ -142,7 +141,7 @@ import coolNames from '../lib/cool_names';
             else
                 session.movie_freq.push({ movie_id: id, count: 1 })
         })
-        session.all_movies.push({ user_id, movie_ids })
+        session.all_movies.push({ username, movie_ids })
         await session.save()
 
         console.log(session.toObject())

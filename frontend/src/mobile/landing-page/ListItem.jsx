@@ -25,10 +25,10 @@ class ListItem extends React.Component {
     render() {
         return (
             <Wrapper>
-                <Avatar src={this.props.avatarSrc} />
+                {this.props.avatarSrc && <Avatar src={this.props.avatarSrc} />}
                 <TextBox>
                     <Text useMonserrat type="subheading" color="primary" fontWeight="medium">{this.props.primary || "Primary text"}</Text>
-                    <Text type="title" color="black" fontSize="2rem">{this.props.secondary || "SecondaryText"}</Text>
+                    <Text type="title" color="black" fontSize={this.props.smallPrimary ? "1rem" : "2rem"}>{this.props.secondary || "SecondaryText"}</Text>
                 </TextBox>
             </Wrapper>
         )

@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     height: auto;
-    margin-top: 5rem;
+    margin-top: 4rem;
 `
 const Avatar = styled(MuiAvatar)`
     margin-right: 1.5rem;
@@ -17,7 +17,8 @@ const Avatar = styled(MuiAvatar)`
 const TextBox = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: flex-start;
 `
 
 class ListItem extends React.Component {
@@ -26,8 +27,8 @@ class ListItem extends React.Component {
             <Wrapper>
                 <Avatar src={this.props.avatarSrc} />
                 <TextBox>
-                    <Text type="caption" color="primary" fontSize="1.3rem" thin>{this.props.primary || "Primary text"}</Text>
-                    <Text type="title" fontSize="2rem">{this.props.secondary || "SecondaryText"}</Text>
+                    <Text useMonserrat type="subheading" color="primary" fontWeight="medium">{this.props.primary || "Primary text"}</Text>
+                    <Text type="title" color="black" fontSize="2rem">{this.props.secondary || "SecondaryText"}</Text>
                 </TextBox>
             </Wrapper>
         )

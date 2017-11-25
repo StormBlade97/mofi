@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import Text from 'atomic-components/Text'
 import Tag from './Tag'
-import { Link } from 'react-router-dom'
 import MuiButton from 'material-ui/Button'
 
 const Wrapper = styled.div`

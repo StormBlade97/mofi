@@ -3,14 +3,10 @@ import {
   autorun,
   action,
   computed,
-  intercept,
 } from 'mobx';
 
 import fetch from '../../fetch';
 import MovieDetailsCache, {hydratedStore} from './MovieDetailsCache';
-import {
-  map
-} from 'lodash';
 
 class MovieStore
 {

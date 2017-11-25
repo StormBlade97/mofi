@@ -3,9 +3,6 @@ import {
   action,
   runInAction,
   autorun,
-  toJS,
-  extendObservable,
-  extendShallowObservable,
 } from 'mobx';
 
 import localForage from 'localforage';

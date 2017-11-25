@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Mobile from './mobile'
 import TV from './tv'

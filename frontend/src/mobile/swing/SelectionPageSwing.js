@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Swing, { Stack, Card, Direction } from './ReactSwing';
+import Swing from './ReactSwing';
 
 import './SelectionPageSwing.scss';
 
@@ -63,7 +63,6 @@ class App extends Component {
     }
     openDetails = () => {
       console.log("show details");
-      const movie = MovieStore.movies[0];
       this.setState({showDetails: true});
     }
     render() {
@@ -81,7 +80,7 @@ class App extends Component {
                     >
                       { MovieStore.moviesReversed.map(m =>
                         <div className="card" key={m.id}>
-                          <img src={m.details.poster_url} />
+                          <img alt="Poster" src={m.details.poster_url} />
                           <div>{m.details.title} </div>
                         </div>
                       )}

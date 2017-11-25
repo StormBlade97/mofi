@@ -1,5 +1,4 @@
 // https://raw.githubusercontent.com/ssanjun/react-swing/master/src/swing.js
-'use strict';
 
 /**
  * @project react-swing
@@ -46,25 +45,25 @@ class Swing extends Component {
     };
   }
 
+  syncEvents(obj, card) {
+    Swing.EVENTS.forEach((event) => {
+      if (obj.props[event]) {
+        card.on(event, obj.props[event]);
+      }
+    });
+  }
+
   componentDidMount() {
     const stack = this.state.stack;
 
-    Swing.EVENTS.map((event) => {
-      if (this.props[event]) {
-        stack.on(event, this.props[event]);
-      }
-    });
+    this.syncEvents(this, stack);
 
     React.Children.forEach(this.props.children, (child, key) => {
       const ref = child.ref || key;
       const element = ReactDOM.findDOMNode(this.refs[`${ref}`]);
       const card = stack.createCard(element);
 
-      Swing.EVENTS.map((event) => {
-        if (child.props[event]) {
-          card.on(event, child.props[event]);
-        }
-      });
+      this.syncEvents(child, card);
     });
 
     this.setState({
@@ -74,13 +73,15 @@ class Swing extends Component {
   }
 
   componentDidUpdate(prevProps, prevState){
+    console.log("update");
     if(this.props.children.length > prevProps.children.length){
+      console.log("update triggered");
       const stack = this.state.stack;
-        Swing.EVENTS.map((event) => {
-          if (this.props[event]) {
-            stack.on(event, this.props[event]);
-          }
-      });
+        //Swing.EVENTS.map((event) => {
+          //if (this.props[event]) {
+            //stack.on(event, this.props[event]);
+          //}
+      //});
 
       React.Children.forEach(this.props.children, (child, key) => {
         const ref = child.ref || key;
@@ -91,11 +92,7 @@ class Swing extends Component {
         });
         console.log(result, element, ref);
         if(!result){
-          Swing.EVENTS.map((event) => {
-            if (child.props[event]) {
-              card.on(event, child.props[event]);
-            }
-          });
+          this.syncEvents(child, card);
         }
       });
       this.setState({

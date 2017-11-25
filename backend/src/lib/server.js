@@ -24,7 +24,7 @@ import seedData from './seed'
 export async function createServer() {
   logger.debug('Creating server...')
   const app = new Koa()
-  
+
   mongoose.connect('mongodb://admin:catdog123456!@cluster0-shard-00-00-htwdg.mongodb.net:27017,cluster0-shard-00-01-htwdg.mongodb.net:27017,cluster0-shard-00-02-htwdg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
         .then(() => {
             console.log("/////\nConnection established with mongo database! :)" )
@@ -47,7 +47,11 @@ export async function createServer() {
     // Handles CORS.
     .use(cors())
     // Parses request bodies.
-    .use(bodyParser())
+    .use(bodyParser({
+      detectJSON: function (ctx) {
+        return true;
+      }
+    }))
     // Creates an Awilix scope per request. Check out the awilix-koa
     // docs for details: https://github.com/jeffijoe/awilix-koa
     .use(scopePerRequest(container))

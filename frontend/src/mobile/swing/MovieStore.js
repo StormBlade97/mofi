@@ -130,7 +130,10 @@ class MovieStore
     });
     const newQueue = await (await fetch(`/session/${UserStore.code}/user-movies`, {
       method: 'post',
-      body: JSON.stringify(queue)
+      body: JSON.stringify({
+        movie_ids: queue,
+        username: UserStore.name,
+      })
     })).json();
     console.log("New Queue", newQueue);
   }

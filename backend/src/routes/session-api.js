@@ -131,6 +131,10 @@ import coolNames from '../lib/cool_names';
         const session = ctx.state.session
         let { username, movie_ids } = ctx.request.body
 
+        console.log(ctx.request.body);
+        console.log("username", username);
+        console.log("movie_ids", username);
+
         if(!Array.isArray(movie_ids)) {
             movie_ids = [movie_ids]
         }
@@ -201,20 +205,20 @@ export default createController(API)
     .prefix('/session')
     .get('/new', 'createSession')
     .get('/:code/valid', 'checkSession', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/new-user', 'getUserID', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/next-movie', 'nextMovie', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .post('/:code/ratings', 'addRating', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .post('/:code/user-movies', 'setMovies', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/recommendations', 'getRecommendations', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })

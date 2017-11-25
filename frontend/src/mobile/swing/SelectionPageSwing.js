@@ -87,6 +87,7 @@ class App extends Component {
                       )}
                     </Swing>
                 </div>
+                { false &&
                 <div>
                     <button type="button" onClick={this.leftSwipe}>
                       left
@@ -101,6 +102,7 @@ class App extends Component {
                       add new
                     </button>
                 </div>
+              }
               { this.state.showDetails ?
                 <div className="card-details">
                   <h4>

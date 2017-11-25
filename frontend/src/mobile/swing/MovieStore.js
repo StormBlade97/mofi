@@ -83,6 +83,18 @@ class MovieStore
     }
   }
 
+  @computed get nrOfSelectedTags() {
+    let count = 0;
+    Object.keys(this.tags).forEach(tagline => {
+      this.tags[tagline].tags.forEach(tag => {
+        if (tag.active) {
+          count++;
+        }
+      });
+    });
+    return count;
+  }
+
   constructor() {
     this.movies = movieDefaultIds.map(id => ({
       id: id,
@@ -102,7 +114,7 @@ class MovieStore
   }
 
   async refreshMovies() {
-    await fetch(`/session/${this.sessionCode}/queue`, {
+    await fetch(`/session/${this.sessionCode}/user-movies`, {
 
     })
   }
@@ -116,8 +128,7 @@ class MovieStore
         }
       });
     });
-    console.log("Sending initial queue to the server", queue);
-    const newQueue = await (await fetch(`/session/${UserStore.code}/queue`, {
+    const newQueue = await (await fetch(`/session/${UserStore.code}/user-movies`, {
       method: 'post',
       body: JSON.stringify(queue)
     })).json();

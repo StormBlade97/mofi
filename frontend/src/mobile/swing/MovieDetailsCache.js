@@ -40,10 +40,10 @@ const store = new MovieDetailsCache()
 
 export const hydratedStore = hydrate('movie-details-store', store);
 hydratedStore.then(() => {
-    console.log('movie details store loaded')
+    //console.log('movie details store loaded')
 })
 
 autorun(() => {
-  console.log("movieDetailsLength", store.movieDetails.size);
+  //console.log("movieDetailsLength", store.movieDetails.size);
 })
 export default store;

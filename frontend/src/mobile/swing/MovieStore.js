@@ -97,7 +97,7 @@ class MovieStore
 const store = new MovieStore()
 
 autorun(() => {
-  console.log("movies changed", store.movies.slice(), store.moviesReversed.slice());
+  console.log("movies changed", store.moviesReversed.slice(), store.movies.length);
 })
 
 autorun("addNewlyFoundDetails", () => {

@@ -4,6 +4,7 @@ import Swing from './ReactSwing';
 
 import './SelectionPageSwing.scss';
 
+import {toJS} from 'mobx';
 import {observer} from 'mobx-react';
 
 import MovieStore from './MovieStore';
@@ -48,7 +49,7 @@ class App extends Component {
       const movie = MovieStore.movies[0];
       // Add sleep here for better animations?
       MovieStore.removeTopMovie();
-      MovieStore.addRating(movie, e.throwDirection);
+      MovieStore.addRating(toJS(movie), e.throwDirection);
     }
     swipeCard(direction) {
       // Swing Component Childrens refs

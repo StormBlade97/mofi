@@ -32,7 +32,8 @@ class Swing extends Component {
       tagName: 'div'
   };
 
-  static EVENTS = ['throwout','throwoutend', 'throwoutleft', 'throwoutright', 'throwin', 'throwinend', 'dragstart', 'dragmove','dragend'];
+  // TODO: remove unused events
+  static EVENTS = ['throwout','throwoutend', 'throwoutleft', 'throwoutright', 'throwin', 'throwinend', 'dragstart', 'dragmove', 'dragend'];
   static DIRECTION = Direction;
 
   constructor(props, context) {
@@ -41,8 +42,8 @@ class Swing extends Component {
     const stack = Stack(props.config);
     this.state = {
       stack: stack,
-      cardList: []
     };
+    this.cardList = [];
   }
 
   syncEvents(obj, card) {
@@ -53,53 +54,65 @@ class Swing extends Component {
     });
   }
 
-  componentDidMount() {
-    const stack = this.state.stack;
-
-    this.syncEvents(this, stack);
-
-    React.Children.forEach(this.props.children, (child, key) => {
-      const ref = child.ref || key;
-      const element = ReactDOM.findDOMNode(this.refs[`${ref}`]);
-      const card = stack.createCard(element);
-
-      this.syncEvents(child, card);
-    });
-
+  syncStack() {
     this.setState({
-      stack: stack
+      stack: this.state.stack
     });
-    this.props.setStack(stack);
+    this.props.setStack(this.state.stack);
+  }
+
+  updateCards(resultFun) {
+    React.Children.forEach(this.props.children, (child, key) => {
+      const ref = child.ref || child.key;
+      const element = ReactDOM.findDOMNode(this.refs[`${ref}`]);
+      const card = this.state.stack.createCard(element);
+      console.log("card", child.key);
+      this.cardList.unshift(card);
+
+      // As we don't set events on the cards itself, no need to sync them
+      if(!resultFun(child)) {
+        this.syncEvents(child, card);
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.syncEvents(this, this.state.stack);
+    this.updateCards(() => false);
+    this.syncStack();
   }
 
   componentDidUpdate(prevProps, prevState){
     console.log("update");
-    if(this.props.children.length > prevProps.children.length){
-      console.log("update triggered");
-      const stack = this.state.stack;
-        //Swing.EVENTS.map((event) => {
-          //if (this.props[event]) {
-            //stack.on(event, this.props[event]);
-          //}
-      //});
+    const prevIds = prevProps.children.map(c => c.key);
+    //const newIds = this.props.children.map(c => c.key);
 
-      React.Children.forEach(this.props.children, (child, key) => {
-        const ref = child.ref || key;
-        const element = ReactDOM.findDOMNode(this.refs[`${ref}`]);
-        const card = stack.createCard(element);
-        let result = prevProps.children.find((c) => {
+    const newChilds = this.props.children.filter(c => prevIds.indexOf(c.key) < 0);
+    //const removedChilds = prevProps.children.filter(c => newIds.indexOf(c.key) < 0);
+
+    if (newChilds.length > 0) {
+      this.cardList.forEach(c => c.destroy());
+      this.updateCards(child => {
+        prevProps.children.find((c) => {
           return c.key === child.key
         });
-        console.log(result, element, ref);
-        if(!result){
-          this.syncEvents(child, card);
-        }
       });
-      this.setState({
-        stack: stack
-      });
-      this.props.setStack(stack);
     }
+
+    // TODO: remove event listener from removed childs
+    //removedChilds.forEach(child => {
+      //console.log("Removed", child.key);
+    //});
+
+    // TOOD: pretty sure this isn't needed
+    if (newChilds.length > 0) {
+      this.syncEvents(this, this.state.stack);
+      this.syncStack();
+    }
+  }
+
+  componentWillUnmount() {
+    this.cardList.forEach(c => c.destroy());
   }
 
   render() {
@@ -116,7 +129,7 @@ class Swing extends Component {
     return (
       <Tag {...tagProps}>
         {React.Children.map(children, (child, key) => {
-          const ref = child.ref || key;
+          const ref = child.ref || child.key;
           const childProps = Object.keys(child.props).reduce((result, key, index) => {
             if (Swing.EVENTS.indexOf(key) === -1) {
               result[key] = child.props[key];

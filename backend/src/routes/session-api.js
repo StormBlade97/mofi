@@ -32,7 +32,6 @@ import codeGen from '../lib/session_code'
         session.code = codeGen()
         await session.save()
         ctx.body = session.code
-        // new session in DB
     },
 
     /// ////////////
@@ -52,6 +51,9 @@ import codeGen from '../lib/session_code'
     /// ////////////
 
     setMood: async (ctx) => {
+        const code = ctx.params.code;
+        let session = await MovieSession.findOne({ code })
+        console.log(session)
         ctx.body = "success"
     },
 
@@ -62,7 +64,7 @@ import codeGen from '../lib/session_code'
 
 export default createController(API)
     .prefix('/session') 
-    // .before([bodyParser()])
+    .before([bodyParser()])
     .get('/new', 'createSession') 
     .get('/:code/next-movie', 'nextMovie') 
     .post('/:code/ratings', 'addRating')

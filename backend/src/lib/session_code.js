@@ -12,7 +12,11 @@ const codes = [
     "letter",
     "green",
     "blue",
-    "red"
+    "red",
+    "purple",
+    "octopus",
+    "squirrel",
+    "ninja"
 ];
 
 const codeGen = () => {

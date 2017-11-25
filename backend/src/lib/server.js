@@ -13,6 +13,7 @@ import { errorHandler } from '../middleware/error-handler'
 
 import mongoose from 'mongoose';
 import * as Models from '../models';
+import seedData from './seed'
 
 /**
  * Creates and returns a new Koa application.
@@ -25,6 +26,11 @@ export async function createServer() {
   const app = new Koa()
   
   mongoose.connect('mongodb://admin:catdog123456!@cluster0-shard-00-00-htwdg.mongodb.net:27017,cluster0-shard-00-01-htwdg.mongodb.net:27017,cluster0-shard-00-02-htwdg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
+        .then(() => {
+            console.log("/////\nConnection established with mongo database! :)" )
+            seedData()
+            console.log("Clearing database and seeding data ... \n/////")
+        })
 
   // Container is configured with our services and whatnot.
   const container = (app.container = configureContainer())

@@ -10,6 +10,8 @@ import { persist } from 'mobx-persist'
 import fetch from '../fetch';
 import hydrate from '../mobile/hydrate';
 
+import MovieDetailsCache from '../mobile/swing/MovieDetailsCache';
+
 class TVStore {
 
   //@persist
@@ -79,4 +81,8 @@ autorun(() => {
     console.log("new code: ", store.code);
   }
 })
+
+autorun(() => {
+
+});
 export default store;

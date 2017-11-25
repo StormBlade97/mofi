@@ -11,6 +11,9 @@ import { configureContainer } from './container'
 import { notFoundHandler } from '../middleware/not-found'
 import { errorHandler } from '../middleware/error-handler'
 
+import mongoose from 'mongoose';
+import * as Models from '../models';
+
 /**
  * Creates and returns a new Koa application.
  * Does *NOT* call `listen`!
@@ -20,6 +23,8 @@ import { errorHandler } from '../middleware/error-handler'
 export async function createServer() {
   logger.debug('Creating server...')
   const app = new Koa()
+  
+  mongoose.connect('mongodb://admin:catdog123456!@cluster0-shard-00-00-htwdg.mongodb.net:27017,cluster0-shard-00-01-htwdg.mongodb.net:27017,cluster0-shard-00-02-htwdg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
 
   // Container is configured with our services and whatnot.
   const container = (app.container = configureContainer())

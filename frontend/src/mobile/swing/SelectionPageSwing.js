@@ -12,6 +12,8 @@ import MovieStore from './MovieStore';
 import styled, { keyframes } from 'styled-components';
 import { bounce, fadeOut, bounceOut, flipInX, flipOutX } from 'react-animations';
 
+import Card from '../card';
+
 const bounceAnimation = keyframes`${flipInX}`;
 
 const BouncyDiv = styled.div`
@@ -35,7 +37,7 @@ class App extends Component {
         showDetail: false,
       };
       this.swingConfig = {
-        allowedDirections: [Swing.DIRECTION.LEFT, Swing.DIRECTION.RIGHT, Swing.DIRECTION.UP],
+        allowedDirections: [Swing.DIRECTION.LEFT, Swing.DIRECTION.RIGHT, Swing.DIRECTION.UP, Swing.DIRECTION.DOWN],
         throwOutConfidence: (xOffset, yOffset, element) => {
           const xConfidence = Math.min(Math.abs(xOffset) / element.offsetWidth, 1);
           const yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
@@ -63,16 +65,26 @@ class App extends Component {
     throwout = (e) => {
       const movie = MovieStore.movies[0];
       // Add sleep here for better animations?
-      MovieStore.removeTopMovie();
-      MovieStore.addRating(toJS(movie), e.throwDirection);
+      if (e.throwDirection !== Swing.DIRECTION.UP && e.throwDirection !== Swing.DIRECTION.DOWN) {
+        MovieStore.removeTopMovie();
+        MovieStore.addRating(toJS(movie), e.throwDirection);
+      } else {
+        MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
+        const target = this.refs.stack.refs[MovieStore.movies[0].id];
+        const el = ReactDOM.findDOMNode(target);
+        const card = this.state.stack.getCard(el);
+        if (e.throwDirection === Swing.DIRECTION.DOWN) {
+          card.throwIn(0, -500);
+        } else {
+          card.throwIn(0, 500);
+        }
+      }
     }
     swipeCard(direction) {
       // reset detail
       MovieStore.movies[0].inDetail = false;
       // Swing Component Childrens refs
-      const cardRefs = Object.keys(this.refs.stack.refs);
-      cardRefs.sort();
-      const target = this.refs.stack.refs[cardRefs[cardRefs.length - 1]];
+      const target = this.refs.stack.refs[MovieStore.movies[0].id];
 
       const el = ReactDOM.findDOMNode(target);
       const card = this.state.stack.getCard(el);
@@ -100,13 +112,10 @@ class App extends Component {
                         <div className="card" key={m.id}>
                           {m.inDetail ?
                             <BouncyDiv className="card-details">
-                                <h4>
-                                  Details
-                                </h4>
-                                <br />
-                                { MovieStore.movies[0].details.title}
-                                <br />
-                                { MovieStore.movies[0].details.overview}
+                                <img alt="Poster" src={m.details.poster_url} />
+                                <Card
+                                  title={ MovieStore.movies[0].details.title}
+                                  duration={"foo"} summary={"Foo"} />
                             </BouncyDiv>
                           :
                             <div>

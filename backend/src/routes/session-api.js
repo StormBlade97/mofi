@@ -84,7 +84,7 @@ import coolNames from '../lib/cool_names';
         const dbUser = tempUser.name
         session.usernames.push(dbUser)
         await session.save()
-        ctx.body = tempUser
+        ctx.body = tempUser;
     },
 
     createSession: async  (ctx) => {
@@ -201,20 +201,20 @@ export default createController(API)
     .prefix('/session')
     .get('/new', 'createSession')
     .get('/:code/valid', 'checkSession', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/new-user', 'getUserID', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/next-movie', 'nextMovie', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .post('/:code/ratings', 'addRating', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .post('/:code/user-movies', 'setMovies', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })
     .get('/:code/recommendations', 'getRecommendations', {
-      before: [bodyParser(), setStatusSession]
+      before: [setStatusSession]
     })

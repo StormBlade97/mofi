@@ -95,12 +95,25 @@ class MovieStore
     return count;
   }
 
-  constructor() {
-    this.movies = movieDefaultIds.map(id => ({
+  @action
+  setMovies(ids) {
+    this.movies = ids.map(id => ({
       id: id,
       details: {},
       inDetail: false,
     }));
+  }
+
+  addMovie(id) {
+    this.movies.push({
+      id: id,
+      details: {},
+      inDetail: false,
+    });
+  }
+
+  constructor() {
+    this.setMovies(movieDefaultIds);
     hydratedStore.then(() => {
       this.movies.forEach(m => {
         MovieDetailsCache.addNewMovieById(m.id);
@@ -130,9 +143,13 @@ class MovieStore
     });
     const newQueue = await (await fetch(`/session/${UserStore.code}/user-movies`, {
       method: 'post',
-      body: JSON.stringify(queue)
+      body: JSON.stringify({
+        movie_ids: queue,
+        username: UserStore.name,
+      })
     })).json();
-    console.log("New Queue", newQueue);
+    this.setMovies(newQueue);
+    return true;
   }
 
   @action
@@ -145,27 +162,14 @@ class MovieStore
         username: UserStore.name,
         rating: "like"
       })
-    })).json();
+    })).text();
+    this.addMovie(newQueue);
     console.log("New Queue", newQueue);
   }
 
   @action
   removeTopMovie() {
     this.movies.shift();
-  }
-
-  addMovie() {
-    this.movies.unshift({
-      title: "Foo222",
-      src: "https://thenypost.files.wordpress.com/2014/11/movietheater131050-525x350.jpg?quality=90&strip=all&w=664&h=441&crop=1"
-    });
-  }
-
-  async storeTags() {
-    // 1) Send movie ids to server
-    // fall back to default ids (?)
-    // 2) Receive initial movie queue
-    return true;
   }
 }
 

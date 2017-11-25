@@ -17,6 +17,7 @@ class UserStore
 {
   @persist @observable name = "";
   @persist @observable code = "";
+  @persist @observable avatar_url = "";
   hasBeenLoaded = false;
 
   async requestNewUserId() {

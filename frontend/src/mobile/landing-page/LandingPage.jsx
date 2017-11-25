@@ -8,7 +8,7 @@ import MuiButton from 'material-ui/Button';
 import { Link } from 'react-router-dom';
 
 import {withRouter} from 'react-router-dom';
-import UserStore from '../UserStore';
+import UserStore, {hydratedStore} from '../UserStore';
 import {observer} from 'mobx-react';
 
 const Wrapper = styled.div`
@@ -52,6 +52,12 @@ const CodeSection = styled.div`
 
 @observer
 class LandingPage extends React.Component {
+	async componentWillMount() {
+		await hydratedStore;
+		if (this.props.match && this.props.match.params && this.props.match.params.code) {
+			UserStore.setCode(this.props.match.params.code);
+		}
+	}
 	startClicked = async () => {
 		this.props.history.push("/app/mood-filter");
 	}

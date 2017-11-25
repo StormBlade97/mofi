@@ -67,7 +67,7 @@ class FilterView extends React.Component {
                     </TagLine>))
                     }
                 </div>
-                <Button color="primary" raised onClick={this.readyClick}><Text type="subheading" useMonserrat={false}>Ready</Text></Button>
+                <Button color="primary" disabled={MovieStore.nrOfSelectedTags === 0} raised onClick={this.readyClick}><Text type="subheading" useMonserrat={false}>Ready</Text></Button>
             </Wrapper>
         )
     }

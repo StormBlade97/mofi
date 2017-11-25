@@ -15,55 +15,61 @@ class App extends Component {
 
       // An instance of the Stack
       this.state = {
-          stack: null
+        stack: null,
+        showDetail: false,
       };
       this.swingConfig = {
-        allowedDirections: [Swing.DIRECTION.LEFT, Swing.DIRECTION.RIGHT]
+        allowedDirections: [Swing.DIRECTION.LEFT, Swing.DIRECTION.RIGHT, Swing.DIRECTION.UP],
+        throwOutConfidence: (xOffset, yOffset, element) => {
+          const xConfidence = Math.min(Math.abs(xOffset) / element.offsetWidth, 1);
+          const yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
+
+          const confidence = Math.max(xConfidence, yConfidence);
+          if (confidence > 0.4)
+            return 1;
+
+          return confidence;
+        }
       }
     }
     rightSwipe = () => {
-      console.log('Swing.DIRECTION', Swing.DIRECTION);
       this.swipeCard(Swing.DIRECTION.RIGHT);
     }
     leftSwipe = () => {
-      console.log('Swing.DIRECTION', Swing.DIRECTION);
-      //this.swipeCard(Swing.DIRECTION.LEFT);
-      console.log("foo")
-      MovieStore.movies.push({
-        title: "Foo222",
-        src: "https://thenypost.files.wordpress.com/2014/11/movietheater131050-525x350.jpg?quality=90&strip=all&w=664&h=441&crop=1"
-      });
+      this.swipeCard(Swing.DIRECTION.LEFT);
+    }
+    topSwipe = () => {
+      this.swipeCard(Swing.DIRECTION.UP);
+    }
+    addNew = () => {
+      MovieStore.addMovie();
     }
     throwout = (e) => {
-      MovieStore.movies.unshift();
-      console.log(this.state.stack)
-      if (e.throwDirection === Swing.DIRECTION.LEFT) {
-        console.log("left", e)
-      } else if (e.throwDirection === Swing.DIRECTION.RIGHT) {
-        console.log("right", e)
-      }
-      MovieStore.addRating();
+      const movie = MovieStore.movies[0];
+      // Add sleep here for better animations?
+      MovieStore.removeTopMovie();
+      MovieStore.addRating(movie, e.throwDirection);
     }
     swipeCard(direction) {
-        // Swing Component Childrens refs
-        const target = this.refs.stack.refs.card2;
+      // Swing Component Childrens refs
+      const cardRefs = Object.keys(this.refs.stack.refs);
+      cardRefs.sort();
+      const target = this.refs.stack.refs[cardRefs[cardRefs.length - 1]];
 
-        // get Target Dom Element
-        const el = ReactDOM.findDOMNode(target);
+      const el = ReactDOM.findDOMNode(target);
+      const card = this.state.stack.getCard(el);
 
-        // stack.getCard
-        const card = this.state.stack.getCard(el);
-
-        // throwOut method call
-        card.throwOut(100, 200, direction);
+      card.throwOut(100, 200, direction);
+    }
+    openDetails = () => {
+      console.log("show details");
+      const movie = MovieStore.movies[0];
+      this.setState({showDetails: true});
     }
     render() {
         return (
             <div>
                 <div id="viewport">
-                    {/*
-                        Swing Element
-                    */}
                     <Swing
                         className="stack"
                         tagName="div"
@@ -71,8 +77,9 @@ class App extends Component {
                         ref="stack"
                         config={this.swingConfig}
                         throwout={this.throwout}
+                        onClick={this.openDetails}
                     >
-                      { MovieStore.movies.map(m =>
+                      { MovieStore.moviesReversed.map(m =>
                         <div className="card" key={m.src}>
                           <img src={m.src} />
                           <div>{m.title} </div>
@@ -80,14 +87,31 @@ class App extends Component {
                       )}
                     </Swing>
                 </div>
-                <div className="control">
+                <div>
                     <button type="button" onClick={this.leftSwipe}>
                       left
                     </button>
                     <button type="button" onClick={this.rightSwipe}>
                       right
                     </button>
+                    <button type="button" onClick={this.topSwipe}>
+                      top
+                    </button>
+                    <button type="button" onClick={this.addNew}>
+                      add new
+                    </button>
                 </div>
+              { this.state.showDetails ?
+                <div className="card-details">
+                  <h4>
+                    Details
+                  </h4>
+                  <br />
+                  { MovieStore.movies[0].title}
+                  <br />
+                  { MovieStore.movies[0].description }
+                </div>
+              : null }
             </div>
         )
     }

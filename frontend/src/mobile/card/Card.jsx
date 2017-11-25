@@ -15,8 +15,9 @@ const CardWrapper = styled(Shadow)`
     border-radius: 6px;
     box-sizing: border-box;
     max-height: 60vh;
-    ${props => props.expanded && "font-size: 14px; max-height: 1000px"};
+    ${props => props.expanded && "max-height: 1000px"};
     transition: all 1s ease;
+    font-size: 14px;
 `
 const CardContent = styled.div`
     padding: 1.5rem;
@@ -32,7 +33,7 @@ const CardMedia = styled.div`
 const DualityBox = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: ${ props => props.noGutter ? "0" : "1 0rem"};
+    margin: ${ props => props.noGutter ? "0" : "1rem 0rem"};
     align-items: center;
 `
 const CenterizeBox = styled.div`

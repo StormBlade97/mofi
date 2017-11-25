@@ -1,23 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
 import Text from 'atomic-components/Text'
+import Wrapper from 'atomic-components/CenteredPageContainer'
 import Tag from './Tag'
 import MuiButton from 'material-ui/Button'
 import {observer} from 'mobx-react';
 import MovieStore from '../swing/MovieStore';
 import {withRouter} from 'react-router-dom';
 
-const Wrapper = styled.div`
-    width: 100vw;
-    height: calc(100vh - 54px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    overflow: hidden;
-    box-sizing: border-box;
-    text-align: center;
-`
+// const Wrapper = styled.div`
+//     width: 100vw;
+//     height: calc(100vh - 54px);
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: space-around;
+//     overflow: hidden;
+//     box-sizing: border-box;
+//     text-align: center;
+// `
 
 const TagLine = styled.div`
     width: 100vw;

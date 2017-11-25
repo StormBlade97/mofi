@@ -3,11 +3,10 @@ import {
   Route,
 } from 'react-router-dom'
 
-import StartPage from './StartPage';
+import MainPage from './MainPage';
 
 export default ({match}) => (
   <div>
-    TV
-    <Route exact path={`${match.url}`} component={StartPage}/>
+    <Route exact path={`${match.url}`} component={MainPage}/>
   </div>
 )

@@ -8,10 +8,10 @@ const schema = new Schema({
         movie_id: String,
         count: Number
     }],
-    all_movies: [{
-        username: String,
-        movie_ids: [String]
-    }],
+    // all_movies: [{
+    //     username: String,
+    //     movie_id: String
+    // }],
     movies_assigned: [{
         username: String, 
         movie_id: String

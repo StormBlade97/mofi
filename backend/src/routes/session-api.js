@@ -1,11 +1,10 @@
 import bodyParser from 'koa-bodyparser'
 // import { authenticate } from './your-auth-middleware'
 import { createController } from 'awilix-koa' // or `awilix-router-core`
-import { Mood, MovieMood, Movie, MovieSession } from '../models'
+import { MovieSession } from '../models'
 import codeGen from '../lib/session_code'
 import {
-  cloneDeep,
-  sample,
+  sample
 } from 'lodash';
 import coolNames from '../lib/cool_names';
 
@@ -41,12 +40,13 @@ import coolNames from '../lib/cool_names';
 
     const lookedAt = session.movies_assigned.toObject().filter(m => m.username === username).map(m => m.movie_id);
 
-    console.log(username)
-    let movies = session.all_movies.toObject().filter(m => m.username === username)[0].movie_ids.filter(id => !lookedAt.includes(id));
+    // console.log(username)
+    // let movies = session.all_movies.toObject().filter(m => m.username === username)[0].movie_ids.filter(id => !lookedAt.includes(id));
+    let movies = session.movie_freq.toObject().filter(m => !lookedAt.includes(m.movie_id))
     // console.log(movies)
     movies.sort((a, b) => {
-        let countA = session.movie_freq.filter(m => m.movie_id === a)[0].count
-        let countB = session.movie_freq.filter(m => m.movie_id === b)[0].count
+        let countA = a.count
+        let countB = b.count
         if(countA > countB) return -1;
         if(countA < countB) return 1;
         return 0;
@@ -57,7 +57,7 @@ import coolNames from '../lib/cool_names';
         ctx.body = null
         return
     }
-    let nextMovie = movies[0]
+    let nextMovie = movies[0].movie_id
 
     session.movies_assigned.push({
         movie_id: nextMovie,
@@ -142,7 +142,7 @@ import coolNames from '../lib/cool_names';
             else
                 session.movie_freq.push({ movie_id: id, count: 1 })
         })
-        session.all_movies.push({ username, movie_ids })
+        // session.all_movies.push({ username, movie_ids })
         await session.save()
 
         console.log(session.toObject())
@@ -193,7 +193,7 @@ import coolNames from '../lib/cool_names';
             })
             // .filter(movie => movie.rating > 0)
 
-        ctx.body = sortedAggRatings
+        ctx.body = { usernames: session.usernames, ratings: sortedAggRatings }
     }
 })
 

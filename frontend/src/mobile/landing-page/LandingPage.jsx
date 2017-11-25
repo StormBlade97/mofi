@@ -6,22 +6,22 @@ import darthVaderAvatar from './avatar.svg'
 import ListItem from './ListItem'
 import MuiButton from 'material-ui/Button';
 import { Link } from 'react-router-dom';
-
+import Wrapper from 'atomic-components/CenteredPageContainer';
 import {withRouter} from 'react-router-dom';
 import UserStore, {hydratedStore} from '../UserStore';
 import {observer} from 'mobx-react';
 
-const Wrapper = styled.div`
-    width: 100vw;
-    height: calc(100vh - 54px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    overflow: hidden;
-    box-sizing: border-box;
-    text-align: center;
-`
+// const Wrapper = styled.div`
+//     width: 100vw;
+//     height: calc(100vh - 54px);
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: space-around;
+//     overflow: hidden;
+//     box-sizing: border-box;
+//     text-align: center;
+// `
 const Input = styled.input`
     font-size: 2.5rem;
     outline: none;

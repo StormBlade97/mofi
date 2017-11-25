@@ -1,6 +1,8 @@
 import bodyParser from 'koa-bodyparser'
 // import { authenticate } from './your-auth-middleware'
 import { createController } from 'awilix-koa' // or `awilix-router-core`
+import { Mood, MovieMood, Movie, MovieSession, Rating } from '../models'
+import codeGen from '../lib/session_code'
 
 /**
  * Routes:
@@ -15,25 +17,26 @@ import { createController } from 'awilix-koa' // or `awilix-router-core`
     - GET /session/:code/recommendations -> [10 x AggregateMovieRating]
  */
 
-// console.log()            
 
  const API = () => ({
 //   constructor ({ userService }) {
 //     this.userService = userService
 //   }
 
-    ///////////////
+    /// ////////////
     // New Session
-    ///////////////
+    /// ////////////
 
     createSession: async  (ctx) => {
-        ctx.body = 'alpha-monkey'
-        // new session in DB
+        let session = new MovieSession({  })
+        session.code = codeGen()
+        await session.save()
+        ctx.body = session.code
     },
 
-    ///////////////
+    /// ////////////
     // Mobile
-    ///////////////
+    /// ////////////
 
     nextMovie: async  (ctx) => {
         ctx.body = { movie_id: 1 }
@@ -43,11 +46,14 @@ import { createController } from 'awilix-koa' // or `awilix-router-core`
         ctx.body = "success"
     },
 
-    ///////////////
+    /// ////////////
     // TV
-    ///////////////
+    /// ////////////
 
     setMood: async (ctx) => {
+        const code = ctx.params.code;
+        let session = await MovieSession.findOne({ code })
+        console.log(session)
         ctx.body = "success"
     },
 
@@ -58,7 +64,7 @@ import { createController } from 'awilix-koa' // or `awilix-router-core`
 
 export default createController(API)
     .prefix('/session') 
-    // .before([bodyParser()])
+    .before([bodyParser()])
     .get('/new', 'createSession') 
     .get('/:code/next-movie', 'nextMovie') 
     .post('/:code/ratings', 'addRating')

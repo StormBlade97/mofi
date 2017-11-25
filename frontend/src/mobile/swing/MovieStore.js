@@ -8,6 +8,7 @@ import {
 import fetch from '../../fetch';
 import MovieDetailsCache, {hydratedStore} from './MovieDetailsCache';
 import UserStore from '../UserStore';
+import Swing from 'react-swing';
 
 const movieDefaultIds = [
     'tt2250912', // spiderman homecoming
@@ -152,12 +153,16 @@ class MovieStore
   @action
   async addRating(movie, direction) {
     console.log("Adding rating for movie", movie, direction);
+    let type = "like";
+    if (direction === Swing.DIRECTION.LEFT) {
+      type = "dislike";
+    }
     const newQueue = await (await fetch(`/session/${UserStore.code}/ratings`, {
       method: 'post',
       body: JSON.stringify({
-        movie_id: "000",
+        movie_id: this.movies[0].id,
         username: UserStore.name,
-        rating: "like"
+        rating: type,
       })
     })).text();
     this.addMovie(newQueue);

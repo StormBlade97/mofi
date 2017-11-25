@@ -84,7 +84,7 @@ import coolNames from '../lib/cool_names';
         const dbUser = tempUser.name
         session.usernames.push(dbUser)
         await session.save()
-        ctx.body = tempUser
+        ctx.body = tempUser;
     },
 
     createSession: async  (ctx) => {
@@ -130,10 +130,6 @@ import coolNames from '../lib/cool_names';
     setMovies: async (ctx) => {
         const session = ctx.state.session
         let { username, movie_ids } = ctx.request.body
-
-        console.log(ctx.request.body);
-        console.log("username", username);
-        console.log("movie_ids", username);
 
         if(!Array.isArray(movie_ids)) {
             movie_ids = [movie_ids]

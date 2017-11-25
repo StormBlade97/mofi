@@ -7,94 +7,88 @@ import {
 
 import fetch from '../../fetch';
 import MovieDetailsCache, {hydratedStore} from './MovieDetailsCache';
+import UserStore from '../UserStore';
+
+const movieDefaultIds = [
+    'tt2250912', // spiderman homecoming
+    'tt3501632', // Thor ragnarok
+    'tt1856101', // blade runner
+    'tt0451279', // wonder woman
+    'tt3450958', // war for the planet of the apes
+    'tt3315342', // logan
+    'tt3896198', // guardians of the galaxy
+    'tt3371366', // transformers
+];
 
 class MovieStore
 {
-
-  @observable sessionCode = "afancysessioncode";
-
-  @observable movies = [
-    {
-      id: 'tt2250912', // spiderman homecoming
-      details: {},
-      title: "Foo",
-      inDetail: false,
-    },
-    {
-      id: 'tt3501632', // Thor ragnarok
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt1856101', // blade runner
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt0451279', // wonder woman
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt3450958', // war for the planet of the apes
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt3315342', // logan
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt3896198', // guardians of the galaxy
-      details: {},
-      inDetail: false,
-    },
-    {
-      id: 'tt3371366', // transformers
-      details: {},
-      inDetail: false,
-    },
-  ];
+  @observable movies = [];
 
   @observable tags = {
-    mood: {
-      name: "Mood",
+    category: {
+      name: "Category",
       tags: [
         { label: "Horror", active: false },
         { label: "Action", active: false },
-        { label: "Superheroes", active: false },
-        { label: "Chrismas", active: false },
-        { label: "Geek night", active: false },
-        { label: "Girl night", active: false },
-        { label: "Last added", active: false },
-        { label: "Oscar winners", active: false },
-        { label: "Thriller", active: false },
-        { label: "Suspense", active: false},
+        { label: "Comedy", active: false },
+        { label: "Drama", active: false },
+        { label: "Sci-Fi", active: false },
         { label: "Romantic", active: false },
-        { label: "LGBTQ", active: false },
-        { label: "Kids", active: false },
+        { label: "Adventure", active: false },
       ]
     },
-    atmosphere: {
+    mood: {
       name: "Mood",
       tags: [
-        { label: "Foo", active: false},
-        { label: "Bar", active: false },
-        { label: "Doo", active: false },
+        { label: "Superheroes", active: false},
+        { label: "Christmas", active: false },
+        { label: "80's", active: false, movies: [
+          'tt0089218', // The Goonies
+          'tt0083866', // E.T. the Extra-Terrestrial
+          'tt0094721', // Beetlejuice
+        ]},
+        { label: "War", active: false },
+        { label: "Ghost", active: false },
+        { label: "Travel", active: false },
       ]
     },
-    time: {
-      name: "Mood",
+    group: {
+      name: "Group type",
       tags: [
-        { label: "Foo", active: false},
-        { label: "Bar", active: false },
-        { label: "Doo", active: false },
+        { label: "Geek night", active: false},
+        { label: "Girls' night", active: false },
+        { label: "Boys' night", active: false, movies: [
+          'tt0073195', // Jaws
+          'tt3659388', // The Martian
+          'tt4065552', // Tuntematon sotilas
+        ]},
+        { label: "Family night", active: false },
+        { label: "Nostalgic night", active: false },
+        { label: "Couple night", active: false },
+      ]
+    },
+    features: {
+      name: "Features",
+      tags: [
+        { label: "Recently added", active: false},
+        { label: "Oscar winners", active: false, movies: [
+          'tt3783958', // La La Land
+          'tt2024544', // 12 Years a Slave
+          'tt1204342', // The Muppets
+        ]},
+        { label: "Most popular", active: false},
+        { label: "Originals", active: false},
+        { label: "Critically acclaimed", active: false},
       ]
     }
   }
 
   constructor() {
+    this.movies = movieDefaultIds.map(id => ({
+      id: id,
+      details: {},
+      inDetail: false,
+    }));
     hydratedStore.then(() => {
       this.movies.forEach(m => {
         MovieDetailsCache.addNewMovieById(m.id);
@@ -116,11 +110,11 @@ class MovieStore
   @action
   async addRating(movie, direction) {
     console.log("Adding rating for movie", movie, direction);
-    const newQueue = await fetch(`/session/${this.sessionCode}/ratings`, {
+    const newQueue = await fetch(`/session/${UserStore.code}/ratings`, {
       method: 'post',
       body: JSON.stringify({
-        movie_id: "00",
-        user_id: "00",
+        movie_id: "000",
+        user_id: UserStore.id,
         rating: "like"
       })
     });
@@ -141,7 +135,8 @@ class MovieStore
   }
 
   async storeTags() {
-    // 1) Send tags to server
+    // 1) Send movie ids to server
+    // fall back to default ids (?)
     // 2) Receive initial movie queue
     return true;
   }

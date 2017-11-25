@@ -42,13 +42,10 @@ class FilterView extends React.Component {
         })
     }
     handleTagSelect = (tagline, label) => {
-    	console.log(tagline, label);
-    	MovieStore.tags[tagline].tags[label].active = !MovieStore.tags[tagline].tags[label].active;
-        //const oldTags = this.state.tags;
-        //const index = oldTags.findIndex(curr => curr.label === label);
-        //oldTags[index].active = !oldTags[index].active;
-        //this.setState({ tags: oldTags });
-        // your mobx logic here
+		const selection = MovieStore.tags[tagline].tags.filter(e => e.label === label);
+		if (selection.length > 0) {
+    		selection[0].active = !selection[0].active;
+    	}
     }
 	readyClick = () => {
 		this.props.history.push("/app/selection");

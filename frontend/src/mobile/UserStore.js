@@ -20,7 +20,7 @@ class UserStore
   async requestNewUserId() {
     if(store.id.length === 0 && store.code.length > 0 && store.hasBeenLoaded === true) {
       // request new ID once
-      const user = await (await fetch(`/${store.code}/new-user`)).json();
+      const user = await (await fetch(`/session/${store.code}/new-user`)).json();
     }
   }
   // TODO: avatar and name

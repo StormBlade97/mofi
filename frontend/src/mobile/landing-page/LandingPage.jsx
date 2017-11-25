@@ -7,6 +7,10 @@ import ListItem from './ListItem'
 import MuiButton from 'material-ui/Button';
 import { Link } from 'react-router-dom';
 
+import {withRouter} from 'react-router-dom';
+import UserStore from '../UserStore';
+import {observer} from 'mobx-react';
+
 const Wrapper = styled.div`
     width: 100vw;
     height: calc(100vh - 54px);
@@ -43,10 +47,17 @@ const Button = styled(MuiButton)`
 const CodeSection = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;    
+    align-items: center;
 `
 
+@observer
 class LandingPage extends React.Component {
+	startClicked = () => {
+		this.props.history.push("/app/mood-filter");
+	}
+	updateCode = (e) => {
+		UserStore.code = e.target.value;
+	}
     render() {
         return (
             <Wrapper>
@@ -55,10 +66,10 @@ class LandingPage extends React.Component {
                     <Text color="black" style={{ margin: "0 3rem" }} useMonserrat={false} type="title" fontWeight="light">Enter the code you see on the main screen and start the matching!</Text>
                 </div>
                 <CodeSection>
-                    <Input placeholder="Enter your code"></Input>
-                    <ListItem avatarSrc={darthVaderAvatar} primary="Your personal ID" secondary="Darth Vader"></ListItem>
+                    <Input onChange={this.updateCode} value={UserStore.code} placeholder="Enter your code"></Input>
+                    <ListItem avatarSrc={UserStore.avatar_url} primary="Your personal ID" secondary={UserStore.name}></ListItem>
                 </CodeSection>
-                <Button component={Link} to={`mood-filter`} color="primary" raised>
+				<Button color="primary" raised disabled={UserStore.code.length === 0} onClick={this.startClicked}>
                     <Text type="subheading" useMonserrat={false}>Start the matching</Text>
                 </Button>
             </Wrapper>
@@ -66,4 +77,4 @@ class LandingPage extends React.Component {
     }
 }
 
-export default LandingPage
+export default withRouter(LandingPage)

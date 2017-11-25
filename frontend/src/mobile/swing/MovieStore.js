@@ -119,7 +119,9 @@ class MovieStore
     const newQueue = await fetch(`/session/${this.sessionCode}/ratings`, {
       method: 'post',
       body: JSON.stringify({
-        id: "foo"
+        movie_id: "00",
+        user_id: "00",
+        rating: "like"
       })
     });
     const response = await newQueue.json();

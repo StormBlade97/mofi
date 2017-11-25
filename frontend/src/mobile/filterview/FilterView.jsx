@@ -41,11 +41,13 @@ class FilterView extends React.Component {
             tagline.scrollLeft = random * 100;
         })
     }
-    handleTagSelect = (label) => {
-        const oldTags = this.state.tags;
-        const index = oldTags.findIndex(curr => curr.label === label);
-        oldTags[index].active = !oldTags[index].active;
-        this.setState({ tags: oldTags });
+    handleTagSelect = (tagline, label) => {
+    	console.log(tagline, label);
+    	MovieStore.tags[tagline].tags[label].active = !MovieStore.tags[tagline].tags[label].active;
+        //const oldTags = this.state.tags;
+        //const index = oldTags.findIndex(curr => curr.label === label);
+        //oldTags[index].active = !oldTags[index].active;
+        //this.setState({ tags: oldTags });
         // your mobx logic here
     }
 	readyClick = () => {
@@ -62,7 +64,7 @@ class FilterView extends React.Component {
                     {
                         Object.keys(MovieStore.tags).map(tagline => (<TagLine key={tagline}>
                         {
-							MovieStore.tags[tagline].tags.map((tag, i) => <Tag onClick={() => this.handleTagSelect(tag.label)} key={i} label={tag.label} active={tag.active}></Tag>)
+							MovieStore.tags[tagline].tags.map((tag) => <Tag onClick={() => this.handleTagSelect(tagline, tag.label)} key={tag.label} label={tag.label} active={tag.active}></Tag>)
                         }
                     </TagLine>))
                     }

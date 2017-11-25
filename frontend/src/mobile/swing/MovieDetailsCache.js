@@ -5,9 +5,9 @@ import {
   autorun,
 } from 'mobx';
 
-import localForage from 'localforage';
-import { create, persist } from 'mobx-persist'
+import { persist } from 'mobx-persist'
 import fetch from '../../fetch';
+import hydrate from '../hydrate';
 
 class MovieDetailsCache
 {
@@ -29,11 +29,6 @@ class MovieDetailsCache
     return response;
   }
 }
-
-const hydrate = create({
-  storage: localForage,
-  jsonify: false
-})
 
 // create the state
 const store = new MovieDetailsCache()

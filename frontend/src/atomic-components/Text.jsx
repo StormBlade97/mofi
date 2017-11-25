@@ -16,7 +16,7 @@ const Text = styled(Typography)`
         }
         return (props.type === "caption" || props.type === "body" || props.type === "body2") ? "'Open Sans', sans-serif" : "'Montserrat', sans-serif"
     } } !important;
-    font-size: ${ props => props.fontSize || props.theme.fontSize };
+    font-size: ${ props => props.fontSize } !important;
     font-weight: ${ props => {
         if (props.fontWeight) {
             const weight = props.fontWeight;
@@ -25,7 +25,7 @@ const Text = styled(Typography)`
             if (weight === "thin") return 200;
         }
         else return 400;
-    } }
+    } } !important;
     color: ${ props => {
         if (props.color) {
             const color = props.color;
@@ -33,7 +33,8 @@ const Text = styled(Typography)`
             if (color === "accent") return props.theme.accent;
             else return color;
         }
-    } }
+        return "rgba(255,255,255, 0.86)" // material-ui darkWhite
+    } } !important;
 `
 
 export default Text;

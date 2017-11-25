@@ -89,7 +89,7 @@ class Swing extends Component {
         let result = prevProps.children.find((c) => {
           return c.key === child.key
         });
-
+        console.log(result, element, ref);
         if(!result){
           Swing.EVENTS.map((event) => {
             if (child.props[event]) {

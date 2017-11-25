@@ -147,7 +147,11 @@ import coolNames from '../lib/cool_names';
 
         console.log(session.toObject())
 
-        ctx.body = "success"
+        const initialMovies = movie_ids.slice(0, 4)
+        initialMovies.forEach((movie_id) => session.movies_assigned.push({ username, movie_id }))
+        await session.save()
+
+        ctx.body = initialMovies
     },
 
     getRecommendations: async (ctx) => {

@@ -59,7 +59,11 @@ export default class MainPage extends React.Component {
 				{ TVStore.usernames.length }
 				<br />
 				Ratings:
-				{ TVStore.ratings.length }
+				<div>
+				{ TVStore.movies.map(m =>
+					<img key={m.id} src={m.details.poster_url} width="100px" height="100px" />
+				)}
+				</div>
             </Container>
         )
     }

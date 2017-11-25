@@ -41,4 +41,5 @@ hydratedStore.then(() => {
 autorun(() => {
   //console.log("movieDetailsLength", store.movieDetails.size);
 })
+
 export default store;

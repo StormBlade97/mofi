@@ -7,7 +7,10 @@ import {
 } from 'mobx';
 
 import fetch from '../../fetch';
-
+import MovieDetailsCache, {hydratedStore} from './MovieDetailsCache';
+import {
+  map
+} from 'lodash';
 
 class MovieStore
 {
@@ -16,21 +19,47 @@ class MovieStore
 
   @observable movies = [
     {
+      id: 'tt2250912', // spiderman homecoming
+      details: {},
       title: "Foo",
-      src: "http://authors.appadvice.com/wp-content/appadvice-v2-media/2015/08/Popcorn-Movies_fc3538c493404ecf8c7071a2641b3626.jpg",
-      description: "Foooooo"
     },
     {
-      title: "Foo2",
-      src: "http://www.destinflorida.com/wp-content/uploads/2015/01/santa-rosa-mall-theater.jpeg",
-      description: "Foooooo"
+      id: 'tt3501632', // Thor ragnarok
+      details: {},
     },
     {
-      title: "Foo3",
-      src: "https://www.welovesolo.com/wp-content/uploads/vector/07/Film-and-movie-4.jpg",
-      description: "Foooooo"
+      id: 'tt1856101', // blade runner
+      details: {},
+    },
+    {
+      id: 'tt0451279', // wonder woman
+      details: {},
+    },
+    {
+      id: 'tt3450958', // war for the planet of the apes
+      details: {},
+    },
+    {
+      id: 'tt3315342', // logan
+      details: {},
+    },
+    {
+      id: 'tt3896198', // guardians of the galaxy
+      details: {},
+    },
+    {
+      id: 'tt3371366', // transformers
+      details: {},
     },
   ];
+
+  constructor() {
+    hydratedStore.then(() => {
+      this.movies.forEach(m => {
+        MovieDetailsCache.addNewMovieById(m.id);
+      });
+    });
+  }
 
   @computed get moviesReversed() {
     // only show three cards at max (performance)
@@ -73,6 +102,17 @@ const store = new MovieStore()
 
 autorun(() => {
   console.log("movies changed", store.movies.slice(), store.moviesReversed.slice());
+})
+
+autorun("addNewlyFoundDetails", () => {
+    store.movies.forEach(m => {
+      // TODO: don't overwrite if not new
+      if(MovieDetailsCache.movieDetails.has(m.id)) {
+        const details = MovieDetailsCache.movieDetails.get(m.id);
+        details.poster_url = `https://image.tmdb.org/t/p/w500${details.poster_path}`;
+        m.details = details;
+      }
+    });
 })
 
 

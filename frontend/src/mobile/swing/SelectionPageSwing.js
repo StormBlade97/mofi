@@ -80,9 +80,9 @@ class App extends Component {
                         onClick={this.openDetails}
                     >
                       { MovieStore.moviesReversed.map(m =>
-                        <div className="card" key={m.src}>
-                          <img src={m.src} />
-                          <div>{m.title} </div>
+                        <div className="card" key={m.id}>
+                          <img src={m.details.poster_url} />
+                          <div>{m.details.title} </div>
                         </div>
                       )}
                     </Swing>
@@ -107,9 +107,9 @@ class App extends Component {
                     Details
                   </h4>
                   <br />
-                  { MovieStore.movies[0].title}
+                  { MovieStore.movies[0].details.title}
                   <br />
-                  { MovieStore.movies[0].description }
+                  { MovieStore.movies[0].details.overview}
                 </div>
               : null }
             </div>

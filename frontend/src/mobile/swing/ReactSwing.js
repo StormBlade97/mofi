@@ -74,7 +74,6 @@ class Swing extends Component {
   }
 
   componentDidUpdate(prevProps, prevState){
-    console.log("swingupdate", this.props.children)
     if(this.props.children.length > prevProps.children.length){
       const stack = this.state.stack;
         Swing.EVENTS.map((event) => {

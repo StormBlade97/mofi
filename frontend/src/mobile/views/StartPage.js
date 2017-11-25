@@ -5,8 +5,8 @@ import {
 
 import LandingPage from '../landing-page'
 
-export default () => {
+export default props => {
   return (
-    <LandingPage></LandingPage>
+    <LandingPage {...props}></LandingPage>
   );
 }

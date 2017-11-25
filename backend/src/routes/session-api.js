@@ -7,6 +7,7 @@ import {
   sample
 } from 'lodash';
 import coolNames from '../lib/cool_names';
+import top250 from '../lib/imdb_top250'
 
 /**
  * Routes:
@@ -51,7 +52,7 @@ import coolNames from '../lib/cool_names';
         if(countA < countB) return 1;
         return 0;
     })
-    console.log(movies)
+    console.log(movies.slice(0, 10))
 
     if(!movies[0]) { // no more movies in mood
         ctx.body = null
@@ -66,6 +67,8 @@ import coolNames from '../lib/cool_names';
     await session.save()
 
     ctx.body = nextMovie
+
+    return nextMovie
  }
 
  const API = () => ({
@@ -91,6 +94,7 @@ import coolNames from '../lib/cool_names';
         let session = new MovieSession({  })
         session.code = codeGen()
         session.usernames = [];
+        session.movie_freq = [...top250].map(movie_id => ({ movie_id: "tt" + movie_id, count: 0 }))
         await session.save()
         ctx.body = session.code
     },
@@ -147,9 +151,15 @@ import coolNames from '../lib/cool_names';
 
         console.log(session.toObject())
 
-        const initialMovies = movie_ids.slice(0, 4)
-        initialMovies.forEach((movie_id) => session.movies_assigned.push({ username, movie_id }))
-        await session.save()
+        let initialMovies = movie_ids.slice(0, 4)
+        if(initialMovies.length === 0) {
+            console.log("No initial movies set ...")
+            initialMovies = [await _nextMovie(ctx), await _nextMovie(ctx), await _nextMovie(ctx), await _nextMovie(ctx)]
+        } else {
+            initialMovies.forEach((movie_id) => session.movies_assigned.push({ username, movie_id }))
+            await session.save()
+        }
+
 
         ctx.body = initialMovies
     },

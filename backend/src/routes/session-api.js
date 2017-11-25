@@ -27,9 +27,6 @@ import codeGen from '../lib/session_code'
  }
 
  const API = () => ({
-//   constructor ({ userService }) {
-//     this.userService = userService
-//   }
 
     /// ////////////
     // New Session
@@ -38,7 +35,7 @@ import codeGen from '../lib/session_code'
     getUserID: async (ctx) => {
         const session = ctx.state.session
         let userId = `user+${codeGen()}+${codeGen()}`
-        session.user_ids += userId
+        session.user_ids.push(userId)
         await session.save()
         ctx.body = userId
     },
@@ -58,8 +55,17 @@ import codeGen from '../lib/session_code'
         const session = ctx.state.session
         const mood_id = session.mood_id
         const user_id = ctx.request.body.user_id
-        
-        let movies = await MovieMood.find({ mood_id }).limit(5)
+
+        const lookedAt = session.movies_assigned.toObject().filter(m => m.user_id == user_id).map(m => m.movie_id);
+
+        let movies = await MovieMood.find({ mood_id })
+                                    .where('movie_id')
+                                    .nin(lookedAt)
+                                    .limit(5)        
+        if(!movies[0]) { // no more movies in mood
+            ctx.body = null
+            return
+        }
         let movie_id = movies[0].movie_id
 
         session.movies_assigned.push({

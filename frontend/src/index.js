@@ -9,8 +9,8 @@ import { orange, indigo } from 'material-ui/colors';
 
 const muiTheme = createMuiTheme({
   palette: {
-    primary: orange,
-    secondary: indigo
+    primary: indigo,
+    secondary: orange
   },
 });
 

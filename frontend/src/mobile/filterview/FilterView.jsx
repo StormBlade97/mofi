@@ -3,10 +3,13 @@ import styled from 'styled-components'
 import Text from 'atomic-components/Text'
 import Tag from './Tag'
 import MuiButton from 'material-ui/Button'
+import {observer} from 'mobx-react';
+import MovieStore from '../swing/MovieStore';
+import {withRouter} from 'react-router-dom';
 
 const Wrapper = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 54px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,25 +32,8 @@ width: calc(100vw - 8rem) !important;
 max-width: 40rem;
 `
 
-export default class FilterView extends React.Component {
-
-    state = {
-        tags: [
-            { label: "Horror", active: false },
-            { label: "Action", active: false },
-            { label: "Superheroes", active: false },
-            { label: "Chrismas", active: true },
-            { label: "Geek night", active: true },
-            { label: "Girl night", active: false },
-            { label: "Last added", active: false },
-            { label: "Oscar winners", active: false },
-            { label: "Thriller", active: false },
-            { label: "Suspense", active: true },
-            { label: "Romantic", active: false },
-            { label: "LGBTQ", active: false },
-            { label: "Kids", active: false },
-        ]
-    }
+@observer
+class FilterView extends React.Component {
 
     componentDidMount() {
         this.tagCloud.childNodes.forEach(tagline => {
@@ -62,6 +48,9 @@ export default class FilterView extends React.Component {
         this.setState({ tags: oldTags });
         // your mobx logic here
     }
+	readyClick = () => {
+		this.props.history.push("/app/selection");
+	}
     render() {
         return (
             <Wrapper>
@@ -71,15 +60,16 @@ export default class FilterView extends React.Component {
                 </div>
                 <div ref={instance => this.tagCloud = instance}>
                     {
-                        [1,2,3,4].map(tagline => (<TagLine key={tagline}>
-                        { 
-                            this.state.tags.map((tag, i) => <Tag onClick={() => this.handleTagSelect(tag.label)} key={i} label={tag.label} active={tag.active}></Tag>)
+                        Object.keys(MovieStore.tags).map(tagline => (<TagLine key={tagline}>
+                        {
+							MovieStore.tags[tagline].tags.map((tag, i) => <Tag onClick={() => this.handleTagSelect(tag.label)} key={i} label={tag.label} active={tag.active}></Tag>)
                         }
                     </TagLine>))
                     }
                 </div>
-                <Button color="primary" raised><Text type="subheading" useMonserrat={false}>Ready</Text></Button>                
+                <Button color="primary" raised onClick={this.readyClick}><Text type="subheading" useMonserrat={false}>Ready</Text></Button>
             </Wrapper>
         )
     }
 }
+export default withRouter(FilterView);

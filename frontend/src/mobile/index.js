@@ -7,7 +7,7 @@ import './index.css'
 import LandingPage from './landing-page';
 import SelectionPageSwing from './swing/SelectionPageSwing';
 import ResultPage from './views/ResultPage';
-import FilterPage from './views/FilterPage';
+import FilterPage from './filterview';
 
 import Logo from '../elisa_logo.png'
 

@@ -44,6 +44,7 @@
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
     "promise": "8.0.1",
+    "prop-types": "^15.6.0",
     "radium": "^0.19.6",
     "react": "^16.1.1",
     "react-animations": "^1.0.0",

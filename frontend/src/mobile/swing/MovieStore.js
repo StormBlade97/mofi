@@ -57,6 +57,43 @@ class MovieStore
     },
   ];
 
+  @observable tags = {
+    mood: {
+      name: "Mood",
+      tags: [
+        { label: "Horror", active: false },
+        { label: "Action", active: false },
+        { label: "Superheroes", active: false },
+        { label: "Chrismas", active: false },
+        { label: "Geek night", active: false },
+        { label: "Girl night", active: false },
+        { label: "Last added", active: false },
+        { label: "Oscar winners", active: false },
+        { label: "Thriller", active: false },
+        { label: "Suspense", active: false},
+        { label: "Romantic", active: false },
+        { label: "LGBTQ", active: false },
+        { label: "Kids", active: false },
+      ]
+    },
+    atmosphere: {
+      name: "Mood",
+      tags: [
+        { label: "Foo", active: false},
+        { label: "Bar", active: false },
+        { label: "Doo", active: false },
+      ]
+    },
+    time: {
+      name: "Mood",
+      tags: [
+        { label: "Foo", active: false},
+        { label: "Bar", active: false },
+        { label: "Doo", active: false },
+      ]
+    }
+  }
+
   constructor() {
     hydratedStore.then(() => {
       this.movies.forEach(m => {
@@ -99,6 +136,12 @@ class MovieStore
       title: "Foo222",
       src: "https://thenypost.files.wordpress.com/2014/11/movietheater131050-525x350.jpg?quality=90&strip=all&w=664&h=441&crop=1"
     });
+  }
+
+  async storeTags() {
+    // 1) Send tags to server
+    // 2) Receive initial movie queue
+    return true;
   }
 }
 

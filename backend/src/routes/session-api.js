@@ -131,10 +131,6 @@ import coolNames from '../lib/cool_names';
         const session = ctx.state.session
         let { username, movie_ids } = ctx.request.body
 
-        console.log(ctx.request.body);
-        console.log("username", username);
-        console.log("movie_ids", username);
-
         if(!Array.isArray(movie_ids)) {
             movie_ids = [movie_ids]
         }

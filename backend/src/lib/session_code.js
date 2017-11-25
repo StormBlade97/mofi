@@ -16,7 +16,9 @@ const codes = [
     "purple",
     "octopus",
     "squirrel",
-    "ninja"
+    "ninja",
+    "happy",
+    "black"
 ];
 
 const codeGen = () => {

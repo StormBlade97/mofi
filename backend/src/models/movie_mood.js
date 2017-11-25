@@ -1,7 +1,7 @@
 import mongoose, { Schema, SchemaTypes } from 'mongoose';
 
 const schema = new Schema({
-    movie_id: Number,
+    movie_id: String,
     mood_id: Number    
 });
 

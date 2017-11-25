@@ -3,6 +3,7 @@ Backend routes:
 See [https://github.com/wilzbach/mofi/issues/15#issuecomment-346887203]()
 
 Mobile:
+- GET /session/:code/new-user   ->  user_id   
 - GET /session/:code/next-movie   ->  Movie (only movie_id)
 - POST /session/:code/ratings (an array of movie objects, ids, ....)
 

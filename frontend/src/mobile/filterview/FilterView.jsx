@@ -47,7 +47,8 @@ class FilterView extends React.Component {
     		selection[0].active = !selection[0].active;
     	}
     }
-	readyClick = () => {
+	readyClick = async () => {
+		await MovieStore.primeMovieQueue();
 		this.props.history.push("/app/selection");
 	}
     render() {

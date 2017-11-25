@@ -107,19 +107,35 @@ class MovieStore
     })
   }
 
+  async primeMovieQueue() {
+    let queue = movieDefaultIds.slice();
+    Object.keys(this.tags).forEach(tagline => {
+      this.tags[tagline].tags.forEach(tag => {
+        if (tag.active && tag.movies !== undefined) {
+          queue = tag.movies.slice().concat(queue);
+        }
+      });
+    });
+    console.log("Sending initial queue to the server", queue);
+    const newQueue = await (await fetch(`/session/${UserStore.code}/queue`, {
+      method: 'post',
+      body: JSON.stringify(queue)
+    })).json();
+    console.log("New Queue", newQueue);
+  }
+
   @action
   async addRating(movie, direction) {
     console.log("Adding rating for movie", movie, direction);
-    const newQueue = await fetch(`/session/${UserStore.code}/ratings`, {
+    const newQueue = await (await fetch(`/session/${UserStore.code}/ratings`, {
       method: 'post',
       body: JSON.stringify({
         movie_id: "000",
         user_id: UserStore.id,
         rating: "like"
       })
-    });
-    const response = await newQueue.json();
-    console.log("New Queue", response);
+    })).json();
+    console.log("New Queue", newQueue);
   }
 
   @action

@@ -3,12 +3,17 @@ import bodyParser from 'koa-bodyparser'
 import { createController } from 'awilix-koa' // or `awilix-router-core`
 import { Mood, MovieMood, Movie, MovieSession } from '../models'
 import codeGen from '../lib/session_code'
+import {
+  cloneDeep,
+  sample,
+} from 'lodash';
+import coolNames from '../lib/cool_names';
 
 /**
  * Routes:
 
    Mobile:
-    - GET /session/:code/new-user   ->  user_id   
+    - GET /session/:code/new-user   ->  user_id
     - GET /session/:code/next-movie   ->  Movie (only movie_id)
     - POST /session/:code/ratings (an array of movie objects, ids, ....)
 
@@ -23,15 +28,19 @@ import codeGen from '../lib/session_code'
     if(code && code !== '') {
         ctx.state.session = await MovieSession.findOne({ code })
     }
-    await next()
+    if (ctx.state.session) {
+      await next();
+    } else {
+      ctx.throw(404, "Invalid session");
+    }
  }
 
  let _nextMovie = async (ctx) => {
     const session = ctx.state.session
-    const { user_id } = ctx.request.body   
+    const { user_id } = ctx.request.body
 
     const lookedAt = session.movies_assigned.toObject().filter(m => m.user_id == user_id).map(m => m.movie_id);
-    
+
     let movies = session.all_movies.toObject().filter(m => m.user_id === user_id)[0].movie_ids.filter(id => !lookedAt.includes(id));
     // console.log(movies)
     movies.sort((a, b) => {
@@ -66,17 +75,29 @@ import codeGen from '../lib/session_code'
 
     getUserID: async (ctx) => {
         const session = ctx.state.session
-        let userId = `user+${codeGen()}+${codeGen()}`
-        session.user_ids.push(userId)
+        let name;
+        do {
+          name = sample(coolNames)
+        } while(session.users.filter(u => u.name === name.name).length > 0);
+        // make a final copy and save
+        const user = cloneDeep(name);
+        user.id = `user+${codeGen()}+${codeGen()}`;
+        session.users.push(user)
         await session.save()
-        ctx.body = userId
+        ctx.body = user
     },
 
     createSession: async  (ctx) => {
         let session = new MovieSession({  })
         session.code = codeGen()
+        session.users = [];
         await session.save()
         ctx.body = session.code
+    },
+
+    checkSession: async  (ctx) => {
+        const session = ctx.state.session
+        ctx.body = session || {};
     },
 
     /// ////////////
@@ -89,9 +110,9 @@ import codeGen from '../lib/session_code'
 
     addRating: async  (ctx) => {
         const session = ctx.state.session
-        const { movie_id, user_id, rating } = ctx.request.body        
+        const { movie_id, user_id, rating } = ctx.request.body
 
-        let ratingObj = { 
+        let ratingObj = {
             movie_id,
             user_id,
             rating
@@ -114,12 +135,12 @@ import codeGen from '../lib/session_code'
             movie_ids = [movie_ids]
         }
 
-        movie_ids.forEach(id => { 
+        movie_ids.forEach(id => {
             let movieFreqObj = session.movie_freq.find(m => m.movie_id === id)
             if(movieFreqObj)
                 movieFreqObj.count += 1;
             else
-                session.movie_freq.push({ movie_id: id, count: 1 }) 
+                session.movie_freq.push({ movie_id: id, count: 1 })
         })
         session.all_movies.push({ user_id, movie_ids })
         await session.save()
@@ -132,9 +153,9 @@ import codeGen from '../lib/session_code'
     getRecommendations: async (ctx) => {
         const session = ctx.state.session
         const ratings = session.movie_ratings
-        
+
         let aggRatings = ratings
-            .reduce((prev, curr) => { 
+            .reduce((prev, curr) => {
                 if(!prev[curr.movie_id]) {
                     prev[curr.movie_id] = 0
                 }
@@ -166,18 +187,30 @@ import codeGen from '../lib/session_code'
                 if(a.rating < b.rating) return 1;
                 return 0;
             })
-            // .filter(movie => movie.rating > 0)            
+            // .filter(movie => movie.rating > 0)
 
         ctx.body = sortedAggRatings
     }
 })
 
 export default createController(API)
-    .prefix('/session') 
-    .before([bodyParser(), setStatusSession])
-    .get('/new', 'createSession') 
-    .get('/:code/new-user', 'getUserID') 
-    .get('/:code/next-movie', 'nextMovie') 
-    .post('/:code/ratings', 'addRating')
-    .post('/:code/user-movies', 'setMovies')
-    .get('/:code/recommendations', 'getRecommendations');
+    .prefix('/session')
+    .get('/new', 'createSession')
+    .get('/:code/valid', 'checkSession', {
+      before: [bodyParser(), setStatusSession]
+    })
+    .get('/:code/new-user', 'getUserID', {
+      before: [bodyParser(), setStatusSession]
+    })
+    .get('/:code/next-movie', 'nextMovie', {
+      before: [bodyParser(), setStatusSession]
+    })
+    .post('/:code/ratings', 'addRating', {
+      before: [bodyParser(), setStatusSession]
+    })
+    .post('/:code/user-movies', 'setMovies', {
+      before: [bodyParser(), setStatusSession]
+    })
+    .get('/:code/recommendations', 'getRecommendations', {
+      before: [bodyParser(), setStatusSession]
+    })

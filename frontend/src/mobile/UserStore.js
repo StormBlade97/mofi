@@ -28,6 +28,8 @@ class UserStore
   @computed get avatar_url () {
     return `https://api.adorable.io/avatars/154/${this.name}`;
   }
+
+  @persist isValid = false;
 }
 
 const store = new UserStore();
@@ -43,6 +45,28 @@ autorun(() => {
     store.requestNewUserId();
   }
 });
+
+autorun(async () => {
+  if(store.code.length === 0)
+    return;
+
+  let positiveResponse = false;
+  try {
+    const response = await (await fetch(`/session/${store.code}/valid`)).json();
+    if (Object.keys(response) > 0){
+      runInAction(() => {
+        store.isValid = true;
+        positiveResponse = true;
+      });
+    }
+  } catch (e) { }
+  if (!positiveResponse) {
+    runInAction(() => {
+      store.isValid = false;
+    });
+  }
+});
+
 
 export const hydratedStore = hydrate('user-id-store', store);
 hydratedStore.then(async () => {

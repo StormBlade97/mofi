@@ -114,11 +114,8 @@ class MovieStore
 
   constructor() {
     this.setMovies(movieDefaultIds);
-    hydratedStore.then(() => {
-      this.movies.forEach(m => {
-        MovieDetailsCache.addNewMovieById(m.id);
-      });
-    });
+    //hydratedStore.then(() => {
+    //});
   }
 
   @computed get moviesReversed() {
@@ -177,6 +174,10 @@ const store = new MovieStore()
 
 autorun(() => {
   console.log("movies changed", store.moviesReversed.slice(), store.movies.length);
+  // ensure our cache is hot
+  store.movies.forEach(m => {
+    MovieDetailsCache.addNewMovieById(m.id);
+  });
 })
 
 autorun("addNewlyFoundDetails", () => {

@@ -79,6 +79,7 @@ export default ({match}) => (
   <div>
     <ElisaImg alt="Elisa" src={Logo} />
     <Route exact path={`${match.url}`} component={LandingPage}/>
+    <Route exact path={`${match.url}/:code`} component={LandingPage}/>
     <Route exact path={`${match.url}/mood-filter`} component={FilterPage}></Route>
     <Route path={`${match.url}/selection`} component={SelectionPageSwing}/>
     <Route path={`${match.url}/result`} component={ResultPage}/>

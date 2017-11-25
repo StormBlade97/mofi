@@ -27,8 +27,7 @@ class UserStore
       runInAction(() => {
         console.log(user);
         this.name = user.name;
-        // TODO: avatar
-        //this.name = user.name;
+        this.avatar_url = user.avatar_url;
       });
       } catch (e) {}
     }
@@ -39,9 +38,9 @@ class UserStore
     this.code = code;
   }
   // TODO: avatar and name
-  @computed get avatar_url () {
-    return `https://api.adorable.io/avatars/154/${this.name}`;
-  }
+  //@computed get avatar_url () {
+    //return `https://api.adorable.io/avatars/154/${this.name}`;
+  //}
 
   @persist @observable isValid = false;
 

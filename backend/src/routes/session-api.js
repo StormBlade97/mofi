@@ -84,7 +84,7 @@ import coolNames from '../lib/cool_names';
         const dbUser = tempUser.name
         session.usernames.push(dbUser)
         await session.save()
-        ctx.body = tempUser
+        ctx.body = tempUser;
     },
 
     createSession: async  (ctx) => {

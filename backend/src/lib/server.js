@@ -31,6 +31,9 @@ export async function createServer() {
             seedData()
             console.log("Clearing database and seeding data ... \n/////")
         })
+        .catch((err) => {
+            console.log(err)
+        })
 
   // Container is configured with our services and whatnot.
   const container = (app.container = configureContainer())

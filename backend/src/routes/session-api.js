@@ -171,31 +171,37 @@ import top250 from '../lib/imdb_top250'
         let aggRatings = ratings
             .reduce((prev, curr) => {
                 if(!prev[curr.movie_id]) {
-                    prev[curr.movie_id] = 0
+                    prev[curr.movie_id] = { value: 0, likes: 0, dislikes: 0, superlikes: 0 }
                 }
 
-                let ratingVal;
                 switch(curr.rating) {
                     case "dislike":
-                        ratingVal = -1;
+                        prev[curr.movie_id].dislikes += 1
+                        prev[curr.movie_id].value += -1                        
                         break;
                     case "like":
-                        ratingVal = 1;
+                        prev[curr.movie_id].likes += 1
+                        prev[curr.movie_id].value += 1        
                         break;
                     case "superlike":
-                        ratingVal = 2;
+                        prev[curr.movie_id].superlikes += 1
+                        prev[curr.movie_id].value += 2        
                         break;
                     default:
                         // throw "Invalid rating"
                         console.log("invalid rating")
                 }
 
-                prev[curr.movie_id] += ratingVal
                 return prev
             }, {});
 
         let sortedAggRatings = Object.keys(aggRatings)
-            .map(id => ({ id, rating: aggRatings[id] }) )
+            .map(id => ({ 
+                id, 
+                rating: aggRatings[id].value, 
+                likes: aggRatings[id].likes, 
+                dislikes: aggRatings[id].dislikes, 
+                superlikes: aggRatings[id].superlikes }) )
             .sort((a, b) => { // sort desc
                 if(a.rating > b.rating) return -1;
                 if(a.rating < b.rating) return 1;

@@ -15,7 +15,8 @@ const ElisaLogo = {
   width: "100%",
   height: "30px",
   objectFit: "contain",
-  margin: "10px",
+  paddingTop: "10px",
+  paddingBottom: "10px",
 }
 
 export default ({match}) => (

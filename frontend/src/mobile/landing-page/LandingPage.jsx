@@ -67,7 +67,9 @@ class LandingPage extends React.Component {
                 </div>
                 <CodeSection>
                     <Input color={UserStore.isValid ? "green" : "red" } onChange={this.updateCode} value={UserStore.code} placeholder="Enter your code"></Input>
+				{ (UserStore.name && UserStore.name.length > 0) ?
                     <ListItem avatarSrc={UserStore.avatar_url} primary="Your personal ID" secondary={UserStore.name}></ListItem>
+                	: null }
                 </CodeSection>
 				<Button color="primary" raised disabled={UserStore.code.length === 0 || !UserStore.isValid} onClick={this.startClicked}>
                     <Text type="subheading" useMonserrat={false}>Start the matching</Text>

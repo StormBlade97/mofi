@@ -4,7 +4,14 @@ const schema = new Schema({
     id: Number,
     user_ids: [String],
     code: String,
-    mood_id: Number,
+    movie_freq: [{
+        movie_id: String,
+        count: Number
+    }],
+    all_movies: [{
+        user_id: String,
+        movie_ids: [String]
+    }],
     movies_assigned: [{
         user_id: String, 
         movie_id: String

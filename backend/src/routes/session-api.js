@@ -26,6 +26,38 @@ import codeGen from '../lib/session_code'
     await next()
  }
 
+ let _nextMovie = async (ctx) => {
+    const session = ctx.state.session
+    const { user_id } = ctx.request.body   
+
+    const lookedAt = session.movies_assigned.toObject().filter(m => m.user_id == user_id).map(m => m.movie_id);
+    
+    let movies = session.all_movies.toObject().filter(m => m.user_id === user_id)[0].movie_ids.filter(id => !lookedAt.includes(id));
+    // console.log(movies)
+    movies.sort((a, b) => {
+        let countA = session.movie_freq.filter(m => m.movie_id === a)[0].count
+        let countB = session.movie_freq.filter(m => m.movie_id === b)[0].count
+        if(countA > countB) return -1;
+        if(countA < countB) return 1;
+        return 0;
+    })
+    console.log(movies)
+
+    if(!movies[0]) { // no more movies in mood
+        ctx.body = null
+        return
+    }
+    let nextMovie = movies[0]
+
+    session.movies_assigned.push({
+        movie_id: nextMovie,
+        user_id
+    })
+    await session.save()
+
+    ctx.body = nextMovie
+ }
+
  const API = () => ({
 
     /// ////////////
@@ -52,29 +84,7 @@ import codeGen from '../lib/session_code'
     /// ////////////
 
     nextMovie: async  (ctx) => {
-        const session = ctx.state.session
-        const mood_id = session.mood_id
-        const user_id = ctx.request.body.user_id
-
-        const lookedAt = session.movies_assigned.toObject().filter(m => m.user_id == user_id).map(m => m.movie_id);
-
-        let movies = await MovieMood.find({ mood_id })
-                                    .where('movie_id')
-                                    .nin(lookedAt)
-                                    .limit(5)        
-        if(!movies[0]) { // no more movies in mood
-            ctx.body = null
-            return
-        }
-        let movie_id = movies[0].movie_id
-
-        session.movies_assigned.push({
-            movie_id,
-            user_id
-        })
-        await session.save()
-
-        ctx.body = movie_id
+        await _nextMovie(ctx)
     },
 
     addRating: async  (ctx) => {
@@ -89,19 +99,33 @@ import codeGen from '../lib/session_code'
         session.movie_ratings.push(ratingObj)
         await session.save()
 
-        ctx.body = session.movie_ratings.toObject()
+        await _nextMovie(ctx)
     },
 
     /// ////////////
     // TV
     /// ////////////
 
-    setMood: async (ctx) => {
+    setMovies: async (ctx) => {
         const session = ctx.state.session
-        const moodId = ctx.request.body.mood_id
-        session.mood_id = moodId
+        let { user_id, movie_ids } = ctx.request.body
+
+        if(!Array.isArray(movie_ids)) {
+            movie_ids = [movie_ids]
+        }
+
+        movie_ids.forEach(id => { 
+            let movieFreqObj = session.movie_freq.find(m => m.movie_id === id)
+            if(movieFreqObj)
+                movieFreqObj.count += 1;
+            else
+                session.movie_freq.push({ movie_id: id, count: 1 }) 
+        })
+        session.all_movies.push({ user_id, movie_ids })
         await session.save()
-        console.log(moodId)
+
+        console.log(session.toObject())
+
         ctx.body = "success"
     },
 
@@ -155,5 +179,5 @@ export default createController(API)
     .get('/:code/new-user', 'getUserID') 
     .get('/:code/next-movie', 'nextMovie') 
     .post('/:code/ratings', 'addRating')
-    .post('/:code/mood', 'setMood')
+    .post('/:code/user-movies', 'setMovies')
     .get('/:code/recommendations', 'getRecommendations');

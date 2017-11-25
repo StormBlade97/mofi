@@ -3,14 +3,10 @@ import {
   autorun,
   action,
   computed,
-  intercept,
 } from 'mobx';
 
 import fetch from '../../fetch';
 import MovieDetailsCache, {hydratedStore} from './MovieDetailsCache';
-import {
-  map
-} from 'lodash';
 
 class MovieStore
 {
@@ -22,34 +18,42 @@ class MovieStore
       id: 'tt2250912', // spiderman homecoming
       details: {},
       title: "Foo",
+      inDetail: false,
     },
     {
       id: 'tt3501632', // Thor ragnarok
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt1856101', // blade runner
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt0451279', // wonder woman
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt3450958', // war for the planet of the apes
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt3315342', // logan
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt3896198', // guardians of the galaxy
       details: {},
+      inDetail: false,
     },
     {
       id: 'tt3371366', // transformers
       details: {},
+      inDetail: false,
     },
   ];
 
@@ -101,7 +105,7 @@ class MovieStore
 const store = new MovieStore()
 
 autorun(() => {
-  console.log("movies changed", store.movies.slice(), store.moviesReversed.slice());
+  console.log("movies changed", store.moviesReversed.slice(), store.movies.length);
 })
 
 autorun("addNewlyFoundDetails", () => {

@@ -1,6 +1,6 @@
-import { indigo } from 'material-ui/colors';
+//import { indigo } from 'material-ui/colors';
 
 export default {
-    primary: "#FFBA30",
-    accent: indigo[500],
+    primary: "#0012B4;",
+    accent: "#EF2E13",
 }

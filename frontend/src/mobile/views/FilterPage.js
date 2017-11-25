@@ -1,9 +1,8 @@
 import React from 'react';
+import FilterView from '../filterview'
 
 export default () => {
   return (
-    <div>
-      The End.
-    </div>
+    <FilterView></FilterView>
   );
 }

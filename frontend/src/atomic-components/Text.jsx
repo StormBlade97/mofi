@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Typography from 'material-ui/Typography'
+import React from 'react';
 
 // const Text = ({ size, color, children, ...typographyProps }) => {
 //     <TextWrapper>
@@ -8,7 +9,7 @@ import Typography from 'material-ui/Typography'
 // }
 
 
-const Text = styled(Typography)`
+const Text = styled(({useMonserrat, fontSize, color, ...rest}) => <Typography {...rest} />)`
     font-family: ${ props => {
         if (props.useMonserrat !== undefined) {
             return props.useMonserrat ? "'Montserrat', sans-serif" : "'Open Sans', sans-serif"
@@ -34,6 +35,6 @@ const Text = styled(Typography)`
         }
         return "rgba(255,255,255, 0.86)" // material-ui darkWhite
     } } !important;
-`
+`;
 
 export default Text;

@@ -66,7 +66,6 @@ class Swing extends Component {
       const ref = child.ref || child.key;
       const element = ReactDOM.findDOMNode(this.refs[`${ref}`]);
       const card = this.state.stack.createCard(element);
-      console.log("card", child.key);
       this.cardList.unshift(card);
 
       // As we don't set events on the cards itself, no need to sync them
@@ -83,7 +82,6 @@ class Swing extends Component {
   }
 
   componentDidUpdate(prevProps, prevState){
-    console.log("update");
     const prevIds = prevProps.children.map(c => c.key);
     //const newIds = this.props.children.map(c => c.key);
 

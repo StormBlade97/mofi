@@ -18,6 +18,7 @@ class TVStore {
   @observable code = "";
   @observable usernames = [];
   @observable movies = [];
+  @observable isValid = false;
 
   @computed get hostURL() {
     return window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: '');
@@ -55,6 +56,7 @@ class TVStore {
     const code = await (await fetch(`/session/new`)).text();
     runInAction(() => {
       this.code = code;
+      this.isValid = true;
     });
     this.refresh();
   }
@@ -78,6 +80,9 @@ class TVStore {
 const store = new TVStore()
 
 export const hydratedStore = hydrate('tv-store', store);
+
+export function initTV() {
+
 hydratedStore.then(() => {
   if (!(store.code && store.code.length > 0)) {
     store.getCode();
@@ -88,9 +93,11 @@ hydratedStore.then(() => {
 // request new code if empty
 autorun(async () => {
   await hydratedStore;
-  console.log("requesting new code");
   if (store.code && store.code.length === 0) {
-    store.getCode();
+    console.log("requesting new code");
+    await store.getCode();
+    console.log("requesting new code", store.code);
+    store.refresh();
   }
 });
 
@@ -99,6 +106,28 @@ autorun(() => {
     console.log("new code: ", store.code);
   }
 })
+
+// check code validity
+autorun(async () => {
+  if (!(store.code && store.code.length > 0))
+    return;
+
+  let positiveResponse = false;
+  try {
+    const response = await (await fetch(`/session/${store.code}/valid`)).json();
+    if (Object.keys(response).length > 0 && "code" in response){
+      runInAction(() => {
+        store.isValid = true;
+        positiveResponse = true;
+      });
+    }
+  } catch (e) { }
+  if (!positiveResponse) {
+    runInAction(() => {
+      store.isValid = false;
+    });
+  }
+});
 
 autorun("addNewlyFoundDetails", () => {
     store.movies.forEach(m => {
@@ -110,5 +139,7 @@ autorun("addNewlyFoundDetails", () => {
       }
     });
 })
+
+};
 
 export default store;

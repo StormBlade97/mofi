@@ -156,15 +156,6 @@ export default class MainPage extends React.Component {
     				    </div>
     				  </div>
                     }
-                    Usernames:
-    				{ TVStore.users.length }
-    				<br />
-    				Ratings:
-    				<div>
-    				{ TVStore.movies.map(m =>
-    					<img key={m.id} src={m.details.poster_url} width="100px" height="100px" />
-    				)}
-    				</div>
                 </InnerContainer>
                     : <InnerContainer>
                         <Text type="display2" color="black" fontWeight="bold">Mood matching</Text>

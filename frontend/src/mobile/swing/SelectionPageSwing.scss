@@ -13,6 +13,10 @@
 	justify-content: center;
 }
 
+#viewport .in-detail > :not(:last-child) {
+	display: none;
+}
+
 #viewport .card {
 	width: 100%;
 	height: calc(95vh - 4rem);

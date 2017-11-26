@@ -117,12 +117,16 @@ class App extends Component {
       MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
     }
     render() {
+        let stackClassName = "stack";
+        if (this.state.showDetail) {
+          stackClassName += " in-detail";
+        }
         return (
             <div>
                 { this.state.showDetail && ReactDOM.createPortal(<Shim></Shim>, document.querySelector("body")) }
                 <div id="viewport">
                     <Swing
-                        className="stack"
+                        className={stackClassName}
                         tagName="div"
                         setStack={(stack)=> this.setState({stack:stack})}
                         ref="stack"
@@ -153,22 +157,6 @@ class App extends Component {
                       }
                     </Swing>
                 </div>
-                { false &&
-                <div>
-                    <button type="button" onClick={this.leftSwipe}>
-                      left
-                    </button>
-                    <button type="button" onClick={this.rightSwipe}>
-                      right
-                    </button>
-                    <button type="button" onClick={this.topSwipe}>
-                      top
-                    </button>
-                    <button type="button" onClick={this.addNew}>
-                      add new
-                    </button>
-                </div>
-              }
             </div>
         )
     }

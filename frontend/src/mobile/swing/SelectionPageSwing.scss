@@ -58,3 +58,11 @@
 	height: calc(95vh - 4rem);
 	display: flex;
 }
+
+.switch-wrapper {
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+}
+
+.switch-wrapper > div {
+}

@@ -23,7 +23,7 @@ class UserStore
   @observable hasBeenLoaded = false;
 
   async getUserId() {
-    if(exists(store.code) && store.hasBeenLoaded === true) {
+    if(exists(store.code) && store.hasBeenLoaded === true && !store.isValidUser) {
       // request new ID once
       try {
         const obj = {

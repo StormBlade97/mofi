@@ -91,10 +91,12 @@ class App extends Component {
         MovieStore.addRating(toJS(movie), e.throwDirection);
         this.setState({ showDetail: false });
       } else {
-        this.toggleDetails();
+        this.onCardClick();
         const target = this.refs.stack.refs[MovieStore.movies[0].id];
         const el = ReactDOM.findDOMNode(target);
+        if (!el) return;
         const card = this.state.stack.getCard(el);
+        if (!card) return;
         if (e.throwDirection === Swing.DIRECTION.DOWN) {
           card.throwIn(0, -500);
         } else {

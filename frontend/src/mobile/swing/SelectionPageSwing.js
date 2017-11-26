@@ -43,7 +43,7 @@ const ThrowableCard = styled(Shadow)`
   ${ props => props.detailed && " box-shadow: none; z-index: 100; " };
 `
 
-const Shim = props => <div style={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%", height: "100%", zIndex: 10, position: "fixed", left: 0, top: 0, animation: "fadeIn 0.3s ease" }} />
+const Shim = props => <div style={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%", height: "100%", zIndex: 10, position: "fixed", left: 0, top: 0, animation: "fadeIn 0.3s ease, slideOutUp 0.5 ease" }} />
 
 @observer
 class App extends Component {
@@ -139,7 +139,7 @@ class App extends Component {
           <div onClick={this.onCardClick}>
               { this.state.showEntireCard ?
                     <Card
-                            style={{ fontSize: 14 }}
+                            style={{ fontSize: 14, animation: "slideInUp 0.3s ease" }}
                             title={ MovieStore.movies[0].details.title}
                             subtitle={ MovieStore.movies[0].details.tagline}
                             duration={MovieStore.movies[0].details.runtime}

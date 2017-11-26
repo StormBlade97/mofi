@@ -93,7 +93,7 @@ class Card extends React.Component {
         return (
             <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.props.expanded} elevation={10} shadowColor={grey[400]} {...this.props}>
                 <CardMediaContainer expanded={this.props.expanded}>
-                    <CardMedia expanded={this.props.expanded} elevation={this.props.expanded ? 0 : 10} primary src={this.props.posterUrl} />
+                    <CardMedia expanded={this.props.expanded} elevation={this.props.expanded ? 0 : 10} primary src={this.props.posterUrl} style={{animation: "bounceIn 0.5s ease"}} />
                 </CardMediaContainer>
                 <CardContent>
                     <DualityBox>

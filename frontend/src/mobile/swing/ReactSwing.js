@@ -90,6 +90,7 @@ class Swing extends Component {
 
     if (newChilds.length > 0) {
       this.cardList.forEach(c => c.destroy());
+      this.cardList = [];
       this.updateCards(child => {
         prevProps.children.find((c) => {
           return c.key === child.key

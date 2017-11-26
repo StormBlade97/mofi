@@ -54,6 +54,7 @@ class App extends Component {
       this.state = {
         stack: null,
         showDetail: false,
+        showEntireCard: false,
         dragging: false
       };
       this.swingConfig = {
@@ -103,7 +104,7 @@ class App extends Component {
     }
     swipeCard(direction) {
       // reset detail
-      MovieStore.movies[0].inDetail = false;
+      this.setState({ showDetail: false, showEntireCard: false })
       // Swing Component Childrens refs
       const target = this.refs.stack.refs[MovieStore.movies[0].id];
 
@@ -112,9 +113,22 @@ class App extends Component {
 
       card.throwOut(100, 200, direction);
     }
-    toggleDetails = () => {
-      this.setState({ showDetail: !this.state.showDetail })
-      MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
+    onCardClick = () => {
+      const target = this.refs.stack.refs[MovieStore.movies[0].id];
+      const el = ReactDOM.findDOMNode(target);
+      let card = this.state.stack.getCard(el);
+      if (this.state.showDetail === false) {
+        this.setState({ showDetail: !this.state.showDetail })
+        return;
+      } else if (this.state.showEntireCard === false) {
+        this.setState({ showEntireCard: true })
+        card.destroy();
+        return;
+      } else {
+        this.setState({ showDetail: !this.state.showDetail, showEntireCard: false})
+        card = this.state.stack.createCard(el);
+        // TODO: add card to react swing card list
+      }
     }
     render() {
         let stackClassName = "stack";
@@ -122,9 +136,22 @@ class App extends Component {
           stackClassName += " in-detail";
         }
         return (
-            <div>
-                { this.state.showDetail && ReactDOM.createPortal(<Shim></Shim>, document.querySelector("body")) }
-                <div id="viewport">
+          <div onClick={this.onCardClick}>
+              { this.state.showEntireCard ?
+                    <Card
+                            style={{ fontSize: 14 }}
+                            title={ MovieStore.movies[0].details.title}
+                            subtitle={ MovieStore.movies[0].details.tagline}
+                            duration={MovieStore.movies[0].details.runtime}
+                            rating={MovieStore.movies[0].details.vote_average / 2}
+                            posterUrl={MovieStore.movies[0].details.poster_url}
+                            expanded={true}
+                            actors={[]}
+                    />
+
+              :
+               (this.state.showDetail && ReactDOM.createPortal(<Shim></Shim>, document.querySelector("body"))) }
+                <div id="viewport" style={{"display": this.state.showEntireCard ? "none" : "block"}}>
                     <Swing
                         className={stackClassName}
                         tagName="div"
@@ -132,13 +159,12 @@ class App extends Component {
                         ref="stack"
                         config={this.swingConfig}
                         throwout={this.throwout}
-                        onClick={this.toggleDetails}
 
                     >
                       { MovieStore.moviesReversed.map(m =>
-                          <ThrowableCard detailed={m.inDetail} key={m.id} elevation={15}>
+                          <ThrowableCard detailed={this.state.showDetail} key={m.id} elevation={15}>
                             {
-                              m.inDetail ?
+                              this.state.showDetail ?
                               (<BouncyDiv className="card-details">
                                   <Card
                                     key={m.id}
@@ -148,6 +174,8 @@ class App extends Component {
                                     duration={MovieStore.movies[0].details.runtime}
                                     rating={MovieStore.movies[0].details.vote_average / 2}
                                     posterUrl={m.details.poster_url}
+                                    expanded={this.state.showEntireCard}
+                                    actors={[]}
                                     />
                               </BouncyDiv>)
                             :

@@ -20,10 +20,10 @@ const SAvatar = styled(Avatar)`
 const Caserolle = props => <CaserolleWrapper useFlex={props.pictureType === "avatar"} style={{ width: props.width || "100%" }}>
     {
         props.pictureType === "avatar" ?
-            props.items.map((item, index) => (
+            (props.items || []).map((item, index) => (
                 <SAvatar imgProps={{ style: { objectFit: "contain" } }} style={{ marginLeft: 4 }} key={index} src={item.src} />
             ))
-        : props.items.map((item, key) => <StyledImg src={item.src}></StyledImg>)
+        : (props.items || []).map((item, key) => <StyledImg src={item.src}></StyledImg>)
     }
 </CaserolleWrapper>
 

@@ -79,7 +79,9 @@ const RatingRaw = props => <ReactStars
 const Rating = withTheme(RatingRaw)
 
 class Card extends React.Component {
-    state = { expanded: false }
+	state = {
+		boxWidth: 0
+	}
     componentDidMount() {
         // for the Caserolle to work
         this.setState({
@@ -89,9 +91,9 @@ class Card extends React.Component {
     handleExpand = () => this.setState({ expanded: true })
     render() {
         return (
-            <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.state.expanded} elevation={10} shadowColor={grey[400]} {...this.props}>
-                <CardMediaContainer expanded={this.state.expanded}>
-                    <CardMedia expanded={this.state.expanded} elevation={this.state.expanded ? 0 : 10} primary src={this.props.posterUrl} />
+            <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.props.expanded} elevation={10} shadowColor={grey[400]} {...this.props}>
+                <CardMediaContainer expanded={this.props.expanded}>
+                    <CardMedia expanded={this.props.expanded} elevation={this.props.expanded ? 0 : 10} primary src={this.props.posterUrl} />
                 </CardMediaContainer>
                 <CardContent>
                     <DualityBox>
@@ -102,7 +104,7 @@ class Card extends React.Component {
                         <SoftText><Icon className="material-icons">access_time</Icon>{this.props.duration}</SoftText>
                     </DualityBox>
                     {
-                        this.state.expanded && <CenterizeBox>
+                        this.props.expanded && <CenterizeBox>
                             <Rating
                                 count={5}
                                 size={32}
@@ -116,7 +118,7 @@ class Card extends React.Component {
                         {this.props.summary}
                         </Text>
                     </DualityBox>
-                    {!this.state.expanded ? (
+                    {!this.props.expanded ? (
                         [<DualityBox >
                             <ContranstTextBox>
                                 <SoftText>Director</SoftText>: <StrongText>{this.props.director}</StrongText>

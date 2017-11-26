@@ -445,7 +445,6 @@ class MovieStore
     this.movies = ids.map(id => ({
       id: id,
       details: {},
-      inDetail: false,
     }));
   }
 
@@ -453,7 +452,6 @@ class MovieStore
     this.movies.push({
       id: id,
       details: {},
-      inDetail: false,
     });
   }
 

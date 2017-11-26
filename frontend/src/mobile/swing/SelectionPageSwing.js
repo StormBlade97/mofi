@@ -147,7 +147,11 @@ class App extends Component {
                             style={{ fontSize: 14, animation: "slideInUp 0.3s ease" }}
                             title={ MovieStore.movies[0].details.title}
                             subtitle={ MovieStore.movies[0].details.tagline}
+                            summary={ MovieStore.movies[0].details.overview}
                             duration={MovieStore.movies[0].details.runtime}
+                            releaseDate={MovieStore.movies[0].details.release_date}
+                            productionCompanies={MovieStore.movies[0].details.production_companies}
+                            budget={(MovieStore.movies[0].details.budget / 1000000).toFixed(1)}
                             rating={MovieStore.movies[0].details.vote_average / 2}
                             posterUrl={MovieStore.movies[0].details.poster_url}
                             expanded={true}
@@ -180,6 +184,7 @@ class App extends Component {
                                     rating={MovieStore.movies[0].details.vote_average / 2}
                                     posterUrl={m.details.poster_url}
                                     expanded={this.state.showEntireCard}
+                                    releaseDate={MovieStore.movies[0].details.release_date}
                                     actors={[]}
                                     />
                               </BouncyDiv>)

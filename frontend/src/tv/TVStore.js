@@ -69,10 +69,14 @@ class TVStore {
   }
   @action
   setMovies(movies) {
-    this.movies = movies.map(m => ({
+    this.movies.replace(movies.map(m => ({
       ...m,
       details: {},
-    }));
+    })));
+  }
+
+  @computed get empty() {
+    return this.users.length === 0;
   }
 }
 
@@ -136,9 +140,12 @@ autorun("addNewlyFoundDetails", () => {
         const details = MovieDetailsCache.movieDetails.get(m.id);
         details.poster_url = `https://image.tmdb.org/t/p/w500${details.poster_path}`;
         m.details = details;
+      } else {
+        MovieDetailsCache.addNewMovieById(m.id);
       }
     });
 })
+
 
 };
 

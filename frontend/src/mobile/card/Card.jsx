@@ -90,6 +90,12 @@ class Card extends React.Component {
     }
     handleExpand = () => this.setState({ expanded: true })
     render() {
+        const productionCompanyLogo = "http://www.swiremarketing.com/gallery/aspects-that-make-a-film-production-company-worth-hiring-picutre/Aspects-that-make-a-film-production-company-worth-hiring.jpg";
+        let companies = [];
+        //if (this.props.productionCompanies ) {
+			//companies = this.props.productionCompanies.map(e => ({...e, src: productionCompanyLogo}));
+		//}
+		//console.log(companies);
         return (
             <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.props.expanded} elevation={10} shadowColor={grey[400]} {...this.props}>
                 <CardMediaContainer expanded={this.props.expanded}>
@@ -101,7 +107,7 @@ class Card extends React.Component {
                             <Text color="black" type="title" fontWeight="bold" useMonserrat={false}>{this.props.title}</Text>
                             <SoftText>{this.props.subtitle}</SoftText>
                         </TitleBox>
-                        <SoftText><Icon className="material-icons">access_time</Icon>{this.props.duration}</SoftText>
+                        <SoftText><Icon className="material-icons">access_time</Icon>{this.props.duration} mins</SoftText>
                     </DualityBox>
                     {
                         this.props.expanded && <CenterizeBox>
@@ -120,12 +126,14 @@ class Card extends React.Component {
                     </DualityBox>
                     {!this.props.expanded ? (
                         [<DualityBox >
+							{ false &&
                             <ContranstTextBox>
                                 <SoftText>Director</SoftText>: <StrongText>{this.props.director}</StrongText>
                             </ContranstTextBox>
+                            }
                             <ContranstTextBox>
-                                <SoftText>Stars: </SoftText>
-                                <StrongText noWrap>{this.props.stars}</StrongText>
+                                <SoftText>Release date: </SoftText>
+                                <StrongText noWrap>{this.props.releaseDate}</StrongText>
                             </ContranstTextBox>
                         </DualityBox>,
                         <DualityBox style={{ marginBottom: 0 }}>
@@ -142,13 +150,17 @@ class Card extends React.Component {
                         ])
                     : (
                         <div>
-                            <ListItem smallPrimary primary="Director" secondary={this.props.director}/>
+                            <ListItem smallPrimary primary="Release date" secondary={this.props.releaseDate}/>
+
+							{ false &&
                             <ListItem smallPrimary primary="Stars">
                                 <Caserolle width={this.state.boxWidth} pictureType="avatar" items={this.props.actors}/>
                             </ListItem>
+                            }
+							{ false &&
                             <ListItem smallPrimary primary="Awards" secondary={this.props.award}/>
-                            <ListItem smallPrimary primary="Backstage">
-                            <Caserolle width={this.state.boxWidth} items={this.props.backstage}/>
+                            }
+							<ListItem smallPrimary primary="Budget" secondary={`\$${this.props.budget} million`}>
                             </ListItem>
                         </div>
                     )

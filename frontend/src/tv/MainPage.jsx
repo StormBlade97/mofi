@@ -98,7 +98,7 @@ const MovieListItem = props => (
         <MovieInfoWrapper>
             <div>
                 <Text type="body" useMonserrat fontWeight="1.2rem" color="black">{props.title}</Text>
-                <Text style={{ textAlign: "left" }} type="body" fontSize="0.9rem" fontWeight="light" color="#949494">{props.duration}</Text>
+                <Text style={{ textAlign: "left" }} type="body" fontSize="0.9rem" fontWeight="light" color="#949494">{props.duration} mins</Text>
             </div>
             <MovieControlWrapper>
                  <span>
@@ -122,6 +122,9 @@ export default class MainPage extends React.Component {
 	componentWillUnmount() {
 		TVStore.stopMonitor();
 	}
+	refreshSession = async () => {
+		TVStore.getCode();
+	};
     render() {
         const roomNotEmpty = TVStore.users.length !== 0;
         const mockDataUserList = [{
@@ -142,26 +145,9 @@ export default class MainPage extends React.Component {
             movieCount: 10            
         }]
 
-        const mockMovieList = [{
-            title: "Tuntematon Sotilas",
-            posterSrc: "https://images-na.ssl-images-amazon.com/images/M/MV5BODk1OGFkYWUtMWQ2MS00OWJhLTkwMzUtZDgyN2I4MDBmY2RmXkEyXkFqcGdeQXVyNzAwMTc2MDU@._V1_UY1200_CR105,0,630,1200_AL_.jpg",
-            duration: "2h40m",
-        },
-        {
-            title: "Thor ranarok",
-            posterSrc: "https://cdn.images.express.co.uk/img/dynamic/36/590x/thor-ragnarok-movie-reviews-868785.jpg",
-            duration: "2h40m",
-            likes: 10
-        },
-        {
-            title: "Tuntematon Sotilas",
-            posterSrc: "https://images-na.ssl-images-amazon.com/images/M/MV5BODk1OGFkYWUtMWQ2MS00OWJhLTkwMzUtZDgyN2I4MDBmY2RmXkEyXkFqcGdeQXVyNzAwMTc2MDU@._V1_UY1200_CR105,0,630,1200_AL_.jpg",
-            duration: "2h40m",
-        }
-    ]
         return (
             <Container>
-                { roomNotEmpty ? <InnerContainer>
+				{ TVStore.empty ? <InnerContainer>
                     <Text type="display2" color="black" fontWeight="bold">Mood matching</Text>
                     <Text color="black" style={{ margin: "1rem 0" }} useMonserrat={false} type="title" fontWeight="light">
                         Let's find the best movie matching all of your moods.
@@ -201,42 +187,44 @@ export default class MainPage extends React.Component {
                     : <InnerContainer>
                         <Text type="display2" color="black" fontWeight="bold">Mood matching</Text>
                         <GridContainer>
-                            <GridCard style={{ width: "30%" }}>
+                            <GridCard style={{ width: "30%", overflow: "auto"}}>
                                 <Text type="subheading" color="black" fontWeight="bold">PARTICIPANTS</Text>
-                                { mockDataUserList.map((user, index) => <UserListItem
-                                    forTV
+                                { TVStore.users.map((user, index) => <UserListItem
                                     style={{ borderBottom: (index === mockDataUserList.length -1) ? "none" : "1px rgba(0,0,0, .3) solid",
                                         padding: (index === mockDataUserList.length -1) ? 0 : "1rem 0" }
                                     }
                                     primary={user.name}
-                                    avatarSrc={user.avatarUrl}
+                                    avatarSrc={user.avatar_url}
                                     secondary={`${user.movieCount} movies`}
                                 />) }
                             </GridCard>
                             <GridCard style={{ width: "50%" }}>
                                 <Text gutterBottom type="subheading" color="black" fontWeight="bold">TOP 3 MATCHES</Text>
-                                { mockMovieList.map(item => <MovieListItem
-                                    title={item.title}
-                                    subtitle="Haa"
-                                    posterSrc={item.posterSrc}
-                                    duration={item.duration}
+                                { TVStore.movies.slice(0, 3).map(movie => <MovieListItem
+                                	key={movie.id}
+                                	likes={movie.likes}
+                                	dislikes={movie.dislikes}
+                                    title={movie.details.title}
+                                    subtitle={movie.details.tagline}
+                                    posterSrc={movie.details.poster_url}
+                                    duration={movie.details.runtime}
                                 />) }
                             </GridCard>
                         </GridContainer>
                         <MovieControlWrapper style={{ marginTop: "1rem" }}>
                             <MovieListWrapper style={{ justifyContent: "space-between", width: "100%" }}>
                                 <div style={{ display: "flex" }}>
-                                    <MovieMedia style={{ height: "auto", width: "auto", minHeight: "4rem", minWidth: "4rem"}} src={"http://randomqrcode.com/services/qrcode.jpg"}></MovieMedia>
+                                    <MovieMedia style={{ height: "auto", width: "auto", minHeight: "4rem", minWidth: "4rem"}} src={TVStore.codeQRURL}></MovieMedia>
                                     <MovieInfoWrapper style={{ justifyContent: "center" }}>
                                     <div>
-                                        <Text type="body" color="black">{"elisamoodmatching.com"}</Text>
-                                        <Text style={{ textAlign: "left" }} type="body" fontSize="1.3rem" fontWeight="bold" color="accent">{"red-ninja"}</Text>
+                                        <Text type="body" color="black">{TVStore.appURL}</Text>
+                                        <Text style={{ textAlign: "left" }} type="body" fontSize="1.3rem" fontWeight="bold" color="accent">{TVStore.code}</Text>
                                     </div>
                                     </MovieInfoWrapper>
                                 </div>
                                 <div style={{ display: "flex" }}>
                                 <PillButton style={{ marginRight: "1rem" }}><Text color="primary">End session</Text></PillButton>
-                                <PillButton><Text color="primary">Refresh session</Text></PillButton>
+                                <PillButton onClick={this.refreshSession} ><Text color="primary">Refresh session</Text></PillButton>
                                 </div>
                             </MovieListWrapper>
                         </MovieControlWrapper>

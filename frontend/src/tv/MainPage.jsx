@@ -11,7 +11,7 @@ import tinyColor from 'tinycolor2';
 
 const Container = myTacoCat(RawContainer)`
     height: 100vh;
-    padding: 18vh 5rem;
+    padding: 0vh 5rem;
     justify-content: center;
     background-color: #D7D9E2;
 `
@@ -127,24 +127,6 @@ export default class MainPage extends React.Component {
 	};
     render() {
         const roomNotEmpty = TVStore.users.length !== 0;
-        const mockDataUserList = [{
-            name: "Jack Sparrow",
-            avatarUrl: "https://vignette.wikia.nocookie.net/disney/images/9/90/Pirates4JackSparrowPosterCropped.jpg/revision/latest/scale-to-width-down/516?cb=20151120172626",
-            movieCount: 5
-        }, {
-            name: "Darth Vader",
-            avatarUrl: "https://brightcove04pmdo-a.akamaihd.net/3653334524001/3653334524001_5381043941001_5379748916001-vs.jpg?pubId=3653334524001&videoId=5379748916001",
-            movieCount: 3
-        }, {
-            name: "Taco Cat",
-            avatarUrl: "https://sites.google.com/a/providenceday.org/the-adventures-of-taco-cat/_/rsrc/1443792599781/home/pics/sad%20taco%20cat.jpg",
-            movieCount: 1
-        }, {
-            avatarUrl: "http://static2.businessinsider.com/image/59ee3686ddd0631c1e8b656f-1200/the%20terminator%20orion%20pictures.jpeg",
-            name: "Terminator",
-            movieCount: 10            
-        }]
-
         return (
             <Container>
 				{ TVStore.empty ? <InnerContainer>
@@ -190,12 +172,12 @@ export default class MainPage extends React.Component {
                             <GridCard style={{ width: "30%", overflow: "auto"}}>
                                 <Text type="subheading" color="black" fontWeight="bold">PARTICIPANTS</Text>
                                 { TVStore.users.map((user, index) => <UserListItem
-                                    style={{ borderBottom: (index === mockDataUserList.length -1) ? "none" : "1px rgba(0,0,0, .3) solid",
-                                        padding: (index === mockDataUserList.length -1) ? 0 : "1rem 0" }
+                                    style={{ borderBottom: (index === TVStore.users.length -1) ? "none" : "1px rgba(0,0,0, .3) solid",
+                                        padding: (index === TVStore.users.length -1) ? 0 : "1rem 0" }
                                     }
                                     primary={user.name}
                                     avatarSrc={user.avatar_url}
-                                    secondary={`${user.movieCount} movies`}
+                                    secondary={`${user.rated_movies} movies`}
                                 />) }
                             </GridCard>
                             <GridCard style={{ width: "50%" }}>

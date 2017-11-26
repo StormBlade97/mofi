@@ -64,7 +64,7 @@ class App extends Component {
           const yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
 
           const confidence = Math.max(xConfidence, yConfidence);
-          if (confidence > 0.4)
+          if (confidence > 0.3)
             return 1;
 
           return confidence;
@@ -113,7 +113,7 @@ class App extends Component {
       const el = ReactDOM.findDOMNode(target);
       const card = this.state.stack.getCard(el);
 
-      card.throwOut(100, 200, direction);
+      card.throwOut(500, 500, direction);
     }
     onCardClick = () => {
       const target = this.refs.stack.refs[MovieStore.movies[0].id];
@@ -123,8 +123,11 @@ class App extends Component {
         this.setState({ showDetail: !this.state.showDetail })
         return;
       } else if (this.state.showEntireCard === false) {
+        card.throwIn(0, 0);
+        setTimeout(() => {
+          card.destroy();
+        }, 500);
         this.setState({ showEntireCard: true })
-        card.destroy();
         return;
       } else {
         this.setState({ showDetail: !this.state.showDetail, showEntireCard: false})

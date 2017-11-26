@@ -16,7 +16,8 @@ export const getShadow = (elevation, shadowColor = grey[500]) => {
     const ambientShadow = tinycolor(shadowColor)
         .setAlpha(0.12)
         .toRgbString();
-
+    
+    // mined from material-ui src for Paper component box-shadow value
     const shadows = [
         `0px 1px 3px 0px ${frontShadow},0px 1px 1px 0px ${auxilaryShadow},0px 2px 1px -1px ${ambientShadow}`,
         `0px 1px 5px 0px ${frontShadow},0px 2px 2px 0px ${auxilaryShadow},0px 3px 1px -2px ${ambientShadow}`,

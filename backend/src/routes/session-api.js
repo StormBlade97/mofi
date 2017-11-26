@@ -5,7 +5,8 @@ import { MovieSession } from '../models'
 import codeGen from '../lib/session_code'
 import {
   sample,
-  shuffle
+  shuffle,
+  uniq,
 } from 'lodash';
 import coolNames from '../lib/cool_names';
 import { digestTop250 } from '../lib/imdb_top250'
@@ -239,7 +240,7 @@ import { digestTop250 } from '../lib/imdb_top250'
             })
             // .filter(movie => movie.rating > 0)
 
-        const users = session.usernames.map(name => ({
+        const users = uniq(session.usernames).map(name => ({
             name,
             avatar_url: coolNames.find(user => name === user.name).avatar_url,
             rated_movies: ratings.filter(r => r.username === name).length,

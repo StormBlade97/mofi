@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {
   Route,
 } from 'react-router-dom'
@@ -7,9 +7,10 @@ import styled from 'styled-components'
 
 import LandingPage from './landing-page';
 import SelectionPageSwing from './swing/SelectionPageSwing';
+import {initMovieStore} from './swing/MovieStore';
+import {initUserStore} from './UserStore';
 import ResultPage from './views/ResultPage';
 import FilterPage from './filterview';
-import CardStock from './card';
 import Logo from '../elisa_logo.png'
 
 const ElisaImg = styled.img`
@@ -19,13 +20,23 @@ const ElisaImg = styled.img`
   margin: 2rem 0;
 `
 
-export default ({match}) => (
-  <div>
-    <ElisaImg alt="Elisa" src={Logo} />
-    <Route exact path={`${match.url}`} component={LandingPage}/>
-    <Route path={`${match.url}/c/:code`} component={LandingPage}/>
-    <Route exact path={`${match.url}/mood-filter`} component={FilterPage}></Route>
-    <Route path={`${match.url}/selection`} component={SelectionPageSwing}/>
-    <Route path={`${match.url}/result`} component={ResultPage}/>
-  </div>
-)
+export default class IndexView extends Component {
+  constructor() {
+    super();
+    initMovieStore();
+    initUserStore();
+  }
+  render() {
+    const match = this.props.match;
+    return (
+      <div>
+        <ElisaImg alt="Elisa" src={Logo} />
+        <Route exact path={`${match.url}`} component={LandingPage}/>
+        <Route path={`${match.url}/c/:code`} component={LandingPage}/>
+        <Route exact path={`${match.url}/mood-filter`} component={FilterPage}></Route>
+        <Route path={`${match.url}/selection`} component={SelectionPageSwing}/>
+        <Route path={`${match.url}/result`} component={ResultPage}/>
+      </div>
+    )
+  }
+}

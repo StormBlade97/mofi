@@ -4,10 +4,11 @@ import { createController } from 'awilix-koa' // or `awilix-router-core`
 import { MovieSession } from '../models'
 import codeGen from '../lib/session_code'
 import {
-  sample
+  sample,
+  shuffle
 } from 'lodash';
 import coolNames from '../lib/cool_names';
-import top250 from '../lib/imdb_top250'
+import { digestTop250 } from '../lib/imdb_top250'
 
 /**
  * Routes:
@@ -58,7 +59,7 @@ import top250 from '../lib/imdb_top250'
         ctx.body = null
         return
     }
-    let nextMovie = movies[0].movie_id
+    let nextMovie = shuffle(movies.splice(0, 4))[0].movie_id // choose randomly one of next 4 movies to mix it up a bit
 
     session.movies_assigned.push({
         movie_id: nextMovie,
@@ -94,7 +95,7 @@ import top250 from '../lib/imdb_top250'
         let session = new MovieSession({  })
         session.code = codeGen()
         session.usernames = [];
-        session.movie_freq = [...top250].map(movie_id => ({ movie_id: "tt" + movie_id, count: 0 }))
+        session.movie_freq = digestTop250()
         await session.save()
         ctx.body = session.code
     },
@@ -160,7 +161,6 @@ import top250 from '../lib/imdb_top250'
             await session.save()
         }
 
-
         ctx.body = initialMovies
     },
 
@@ -171,31 +171,37 @@ import top250 from '../lib/imdb_top250'
         let aggRatings = ratings
             .reduce((prev, curr) => {
                 if(!prev[curr.movie_id]) {
-                    prev[curr.movie_id] = 0
+                    prev[curr.movie_id] = { value: 0, likes: 0, dislikes: 0, superlikes: 0 }
                 }
 
-                let ratingVal;
                 switch(curr.rating) {
                     case "dislike":
-                        ratingVal = -1;
+                        prev[curr.movie_id].dislikes += 1
+                        prev[curr.movie_id].value += -1                        
                         break;
                     case "like":
-                        ratingVal = 1;
+                        prev[curr.movie_id].likes += 1
+                        prev[curr.movie_id].value += 1        
                         break;
                     case "superlike":
-                        ratingVal = 2;
+                        prev[curr.movie_id].superlikes += 1
+                        prev[curr.movie_id].value += 2        
                         break;
                     default:
                         // throw "Invalid rating"
                         console.log("invalid rating")
                 }
 
-                prev[curr.movie_id] += ratingVal
                 return prev
             }, {});
 
         let sortedAggRatings = Object.keys(aggRatings)
-            .map(id => ({ id, rating: aggRatings[id] }) )
+            .map(id => ({ 
+                id, 
+                rating: aggRatings[id].value, 
+                likes: aggRatings[id].likes, 
+                dislikes: aggRatings[id].dislikes, 
+                superlikes: aggRatings[id].superlikes }) )
             .sort((a, b) => { // sort desc
                 if(a.rating > b.rating) return -1;
                 if(a.rating < b.rating) return 1;
@@ -203,7 +209,12 @@ import top250 from '../lib/imdb_top250'
             })
             // .filter(movie => movie.rating > 0)
 
-        ctx.body = { usernames: session.usernames, ratings: sortedAggRatings }
+        const users = session.usernames.map(name => ({
+            name,
+            avatar_url: coolNames.find(user => name === user.name).avatar_url
+        }))
+
+        ctx.body = { users: users, ratings: sortedAggRatings }
     }
 })
 

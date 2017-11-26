@@ -87,8 +87,8 @@ class App extends Component {
       const movie = MovieStore.movies[0];
       // Add sleep here for better animations?
       if (e.throwDirection !== Swing.DIRECTION.UP && e.throwDirection !== Swing.DIRECTION.DOWN) {
-        MovieStore.removeTopMovie();
         MovieStore.addRating(toJS(movie), e.throwDirection);
+        MovieStore.removeTopMovie();
         this.setState({ showDetail: false });
       } else {
         this.onCardClick();

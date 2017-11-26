@@ -54,7 +54,6 @@ import { digestTop250 } from '../lib/imdb_top250'
         if(countA < countB) return 1;
         return 0;
     })
-    console.log(movies.slice(0, 10))
 
     if(!movies[0]) { // no more movies in mood
         ctx.body = null

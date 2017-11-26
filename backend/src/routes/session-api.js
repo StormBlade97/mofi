@@ -4,10 +4,11 @@ import { createController } from 'awilix-koa' // or `awilix-router-core`
 import { MovieSession } from '../models'
 import codeGen from '../lib/session_code'
 import {
-  sample
+  sample,
+  shuffle
 } from 'lodash';
 import coolNames from '../lib/cool_names';
-import top250 from '../lib/imdb_top250'
+import { digestTop250 } from '../lib/imdb_top250'
 
 /**
  * Routes:
@@ -58,7 +59,7 @@ import top250 from '../lib/imdb_top250'
         ctx.body = null
         return
     }
-    let nextMovie = movies[0].movie_id
+    let nextMovie = shuffle(movies.splice(0, 4))[0].movie_id // choose randomly one of next 4 movies to mix it up a bit
 
     session.movies_assigned.push({
         movie_id: nextMovie,
@@ -124,7 +125,7 @@ import top250 from '../lib/imdb_top250'
         let session = new MovieSession({  })
         session.code = codeGen()
         session.usernames = [];
-        session.movie_freq = [...top250].map(movie_id => ({ movie_id: "tt" + movie_id, count: 0 }))
+        session.movie_freq = digestTop250()
         await session.save()
         ctx.body = session.code
     },
@@ -189,7 +190,6 @@ import top250 from '../lib/imdb_top250'
             initialMovies.forEach((movie_id) => session.movies_assigned.push({ username, movie_id }))
             await session.save()
         }
-
 
         ctx.body = initialMovies
     },

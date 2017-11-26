@@ -18,7 +18,7 @@ export default class MainPage extends React.Component {
 		initTV();
 	}
 	componentDidMount() {
-		//TVStore.startMonitor();
+		TVStore.startMonitor();
 	}
 	componentWillUnmount() {
 		TVStore.stopMonitor();
@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
 				  </div>
                 }
                 Usernames:
-				{ TVStore.usernames.length }
+				{ TVStore.users.length }
 				<br />
 				Ratings:
 				<div>

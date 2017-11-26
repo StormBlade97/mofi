@@ -16,7 +16,7 @@ class TVStore {
 
   @persist
   @observable code = "";
-  @observable usernames = [];
+  @observable users = [];
   @observable movies = [];
   @observable isValid = false;
 
@@ -43,8 +43,8 @@ class TVStore {
         store.code = "";
         return;
       }
-      if (body && body.usernames) {
-        this.usernames = body.usernames;
+      if (body && body.users) {
+        this.users = body.users;
       }
       if (body && body.ratings) {
         this.setMovies(body.ratings);

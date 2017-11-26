@@ -15,20 +15,32 @@ const exists = (s) => (s && s.length > 0) || false;
 
 class UserStore
 {
-  @persist @observable name = "";
+  @observable @persist name = "";
   @persist @observable code = "";
-  @persist @observable avatar_url = "";
-  hasBeenLoaded = false;
+  @observable @persist avatar_url = "";
+  @observable @persist session_id = "";
 
-  async requestNewUserId() {
-    if(!exists(store.name) && exists(store.code) && store.hasBeenLoaded === true) {
+  @observable hasBeenLoaded = false;
+
+  async getUserId() {
+    if(exists(store.code) && store.hasBeenLoaded === true) {
       // request new ID once
       try {
-      const user = await (await fetch(`/session/${store.code}/new-user`)).json();
+        const obj = {
+            username: this.name,
+            avatar_url: this.avatar_url,
+            session_id: this.session_id,
+          }
+        const user = await (await fetch(`/session/${store.code}/user`, {
+          method: 'post',
+          body: JSON.stringify(obj)
+      })).json();
       runInAction(() => {
-        console.log(user);
+        //console.log("user", user);
+        this.isValidUser = true;
         this.name = user.name;
         this.avatar_url = user.avatar_url;
+        this.session_id = user.session_id;
       });
       } catch (e) {}
     }
@@ -37,16 +49,42 @@ class UserStore
     // reset user
     this.name = "";
     this.code = code;
+    this.session_id = "";
   }
-  // TODO: avatar and name
+
   //@computed get avatar_url () {
     //return `https://api.adorable.io/avatars/154/${this.name}`;
   //}
 
-  @persist @observable isValid = false;
-
+  @observable isValid = false;
+  @observable isValidUser = false;
   @computed get isValidSession() {
     return this.isValid && exists(this.name) && exists(this.code);
+  }
+
+  async checkSession() {
+    if(!exists(store.code))
+      return;
+
+    //console.log("check ...");
+    let positiveResponse = false;
+    try {
+      const response = await (await fetch(`/session/${store.code}/valid`)).json();
+      //console.log("checking session", response);
+      if (Object.keys(response).length > 0 && "code" in response){
+        runInAction(() => {
+          store.isValid = true;
+          store.isValidUser = false;
+          positiveResponse = true;
+        });
+      }
+    } catch (e) { }
+    if (!positiveResponse) {
+      runInAction(() => {
+        store.isValid = false;
+        store.isValidUser = false;
+      });
+    }
   }
 }
 
@@ -60,36 +98,25 @@ export const hydratedStore = hydrate('user-id-store', store);
 //});
 
 export function initUserStore() {
-autorun(() => {
-  if(exists(store.code) && !exists(store.id)) {
-    store.requestNewUserId();
+
+// check session validity
+autorun(async () => {
+  if (exists(store.code)) {
+    store.checkSession();
   }
 });
 
+// reload invalid user names
 autorun(async () => {
-  if(!exists(store.code))
-    return;
-
-  let positiveResponse = false;
-  try {
-    const response = await (await fetch(`/session/${store.code}/valid`)).json();
-    if (Object.keys(response).length > 0 && "code" in response){
-      runInAction(() => {
-        store.isValid = true;
-        positiveResponse = true;
-      });
-    }
-  } catch (e) { }
-  if (!positiveResponse) {
-    runInAction(() => {
-      store.isValid = false;
-    });
+  if (store.hasBeenLoaded && !store.isValidUser && store.isValid) {
+    store.getUserId();
   }
 });
 
 hydratedStore.then(async () => {
-  store.requestNewUserId();
-  store.hasBeenLoaded = true;
+  runInAction(() => {
+    store.hasBeenLoaded = true;
+  });
 })
 }
 

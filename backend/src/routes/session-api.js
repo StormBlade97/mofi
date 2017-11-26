@@ -79,16 +79,46 @@ import top250 from '../lib/imdb_top250'
 
     getUserID: async (ctx) => {
         const session = ctx.state.session
+        if (ctx.request.body) {
+          const {username, session_id, avatar_url} = ctx.request.body;
+          if (username && session_id === session._id.toString()) {
+            ctx.body = {
+              name: username, avatar_url, session_id,
+            }
+            return;
+          }
+        }
+
         let tempUser;
+        let count = 0;
         do {
           tempUser = sample(coolNames)
-        } while(session.usernames.filter(u => u === tempUser.name).length > 0);
+          count++;
+        } while(session.usernames.filter(u => u === tempUser.name).length > 0 && count < 10);
+        if( count > 10) {
+          ctx.throw(500, "Too many users");
+        }
         // make a final copy and save
         const dbUser = tempUser.name
         session.usernames.push(dbUser)
         await session.save()
-        ctx.body = tempUser;
+        ctx.body = {
+          ...tempUser,
+          session_id: session._id.toString()
+        };
     },
+
+    //validUserID: async (ctx) => {
+        //const session = ctx.state.session
+        //const username = ctx.request.body.username || ctx.request.query.username;
+        //console.log("username", username);
+        ////if (session.usernames.indexOf(username) >= 0 && username && username.length > 2) {
+        //if (username && username.length > 2) {
+          //ctx.body = {username};
+        //} else {
+          //ctx.throw(404, "Invalid user");
+        //}
+    //},
 
     createSession: async  (ctx) => {
         let session = new MovieSession({  })
@@ -177,15 +207,15 @@ import top250 from '../lib/imdb_top250'
                 switch(curr.rating) {
                     case "dislike":
                         prev[curr.movie_id].dislikes += 1
-                        prev[curr.movie_id].value += -1                        
+                        prev[curr.movie_id].value += -1
                         break;
                     case "like":
                         prev[curr.movie_id].likes += 1
-                        prev[curr.movie_id].value += 1        
+                        prev[curr.movie_id].value += 1
                         break;
                     case "superlike":
                         prev[curr.movie_id].superlikes += 1
-                        prev[curr.movie_id].value += 2        
+                        prev[curr.movie_id].value += 2
                         break;
                     default:
                         // throw "Invalid rating"
@@ -196,11 +226,11 @@ import top250 from '../lib/imdb_top250'
             }, {});
 
         let sortedAggRatings = Object.keys(aggRatings)
-            .map(id => ({ 
-                id, 
-                rating: aggRatings[id].value, 
-                likes: aggRatings[id].likes, 
-                dislikes: aggRatings[id].dislikes, 
+            .map(id => ({
+                id,
+                rating: aggRatings[id].value,
+                likes: aggRatings[id].likes,
+                dislikes: aggRatings[id].dislikes,
                 superlikes: aggRatings[id].superlikes }) )
             .sort((a, b) => { // sort desc
                 if(a.rating > b.rating) return -1;
@@ -224,7 +254,7 @@ export default createController(API)
     .get('/:code/valid', 'checkSession', {
       before: [setStatusSession]
     })
-    .get('/:code/new-user', 'getUserID', {
+    .post('/:code/user', 'getUserID', {
       before: [setStatusSession]
     })
     .get('/:code/next-movie', 'nextMovie', {

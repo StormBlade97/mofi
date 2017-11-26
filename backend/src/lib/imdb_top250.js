@@ -1,3 +1,5 @@
+import { shuffle } from 'lodash';
+
 const top250 = [
   "0111161",
   "0068646",
@@ -250,4 +252,9 @@ const top250 = [
   "0072890",
   "1954470",
 ]
+
+const digestTop250 = () => shuffle([...top250].map(movie_id => ({ movie_id: "tt" + movie_id, count: 0 })))
+
+export { digestTop250 }
+
 export default top250;

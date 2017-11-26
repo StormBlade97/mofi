@@ -66,7 +66,8 @@ class LandingPage extends React.Component {
 	}
     render() {
     	const color = {color: UserStore.isValid ? "green" : "red"};
-    	console.log("color", color, UserStore.isValid);
+        console.log("color", color, UserStore.isValid);
+        console.log(UserStore);
         return (
             <Wrapper>
                 <div>

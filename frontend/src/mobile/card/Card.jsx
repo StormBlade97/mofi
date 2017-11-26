@@ -10,37 +10,51 @@ import ListItem from './ListItem'
 import Caserolle from './Caserolle'
 
 const CardWrapper = styled(Shadow)`
+    background-color: white;
     max-width: 30rem;
     width: 100%;
     border-radius: 6px;
     box-sizing: border-box;
-    max-height: 60vh;
-    ${props => props.expanded && "max-height: 1000px"};
+    max-height: 100vh;
+    ${props => props.expanded && "max-height: 1000px;"};
     transition: all 1s ease;
     font-size: 14px;
+    position: relative;
+    margin: auto;
 `
 const CardContent = styled.div`
     padding: 1.5rem;
 `
-const CardMedia = styled.div`
+const CardMedia = styled(Shadow)`
     background-image: url(${props => props.src});
-    width: 100%;
-    height: 40vh;
+    width: ${ props => props.expanded ? "100%" : "80%" };
+    height: 100%;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    transition: all 1s ease;
+    z-index: 10;
+    border-radius: 6px;
 `
 const DualityBox = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: ${ props => props.noGutter ? "0" : "1rem 0rem"};
+    margin: ${ props => props.noGutter ? "0" : "1rem 0"};
     align-items: center;
 `
 const CenterizeBox = styled.div`
     display: flex;
     justify-content: center;
     margin: 1.5rem;
-    
+    transition: all 1s ease;
+`
+const CardMediaContainer = styled.div`
+    width: 100%;
+    height: ${ props => props.expanded ? "30vh" : "30vh" /* grow by 10vh*/};
+    transform: ${props => props.expanded ? "none" : "translateY(-10vh)"};
+    display: flex;
+    justify-content: center;
+    ${props => !props.expanded && "margin-bottom: -10vh"};
 `
 const TitleBox = styled.div`
     display: flex;
@@ -75,10 +89,10 @@ class Card extends React.Component {
     handleExpand = () => this.setState({ expanded: true })
     render() {
         return (
-            <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.state.expanded} elevation={10} {...this.props}>
-                {
-                    this.state.expanded && <CardMedia src={this.props.posterUrl} />
-                }
+            <CardWrapper innerRef={instance => this.wrapperBox = instance} expanded={this.state.expanded} elevation={10} shadowColor={grey[400]} {...this.props}>
+                <CardMediaContainer expanded={this.state.expanded}>
+                    <CardMedia expanded={this.state.expanded} elevation={this.state.expanded ? 0 : 10} primary src={this.props.posterUrl} />
+                </CardMediaContainer>
                 <CardContent>
                     <DualityBox>
                         <TitleBox>
@@ -103,7 +117,7 @@ class Card extends React.Component {
                         </Text>
                     </DualityBox>
                     {!this.state.expanded ? (
-                        <DualityBox>
+                        [<DualityBox >
                             <ContranstTextBox>
                                 <SoftText>Director</SoftText>: <StrongText>{this.props.director}</StrongText>
                             </ContranstTextBox>
@@ -111,7 +125,19 @@ class Card extends React.Component {
                                 <SoftText>Stars: </SoftText>
                                 <StrongText noWrap>{this.props.stars}</StrongText>
                             </ContranstTextBox>
-                        </DualityBox>)
+                        </DualityBox>,
+                        <DualityBox style={{ marginBottom: 0 }}>
+                            <Rating
+                                count={5}
+                                size={24}
+                                value={this.props.rating}
+                                edit={false}
+                            />
+                            <Button onClick={this.handleExpand}>
+                                <Text useMonserrat={false} color="accent" fontWeight="bold" fontSize="1rem">More info</Text>
+                            </Button>
+                        </DualityBox>
+                        ])
                     : (
                         <div>
                             <ListItem smallPrimary primary="Director" secondary={this.props.director}/>
@@ -126,17 +152,6 @@ class Card extends React.Component {
                     )
                     }
                 </CardContent>
-                {!this.state.expanded && <DualityBox>
-                    <Rating
-                        count={5}
-                        size={24}
-                        value={this.props.rating}
-                        edit={false}
-                    />
-                    <Button onClick={this.handleExpand}>
-                        <Text useMonserrat={false} color="accent" fontWeight="bold" fontSize="1rem">More info</Text>
-                    </Button>
-                </DualityBox>}
             </CardWrapper>
         )
     }

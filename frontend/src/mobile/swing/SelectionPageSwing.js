@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Swing from './ReactSwing';
-
+import Shadow from 'atomic-components/Shadow';
 import './SelectionPageSwing.scss';
 
 import {toJS} from 'mobx';
@@ -14,10 +14,12 @@ import { bounce, fadeOut, bounceOut, flipInX, flipOutX } from 'react-animations'
 
 import Card from '../card';
 
-const bounceAnimation = keyframes`${flipInX}`;
+// const bounceAnimation = keyframes`${flipInX}`;
 
 const BouncyDiv = styled.div`
-  animation: 0.5s ${bounceAnimation};
+  animation: fadeInUp 0.3s ease;
+  background: transparent;
+  width: 100vw;
 `;
 
 //const MainCardDiv = styled.div;
@@ -25,6 +27,23 @@ const BouncyDiv = styled.div`
   //animation: 0.5s ${keyframes`${flipOutX}`};
 //`;
 
+const ImageCard = styled.div`
+  background-image: url(${props => props.src});
+  width: 80vw;
+  height: 80vh;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 6px;
+`
+const ThrowableCard = styled(Shadow)`
+  position: absolute;
+  margin: auto;
+  display: flex;
+  ${ props => props.detailed && " box-shadow: none; z-index: 100; " };
+`
+
+const Shim = props => <div style={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%", height: "100%", zIndex: 10, position: "fixed", left: 0, top: 0, animation: "fadeIn 0.3s ease" }} />
 
 @observer
 class App extends Component {
@@ -35,6 +54,7 @@ class App extends Component {
       this.state = {
         stack: null,
         showDetail: false,
+        dragging: false
       };
       this.swingConfig = {
         allowedDirections: [Swing.DIRECTION.LEFT, Swing.DIRECTION.RIGHT, Swing.DIRECTION.UP, Swing.DIRECTION.DOWN],
@@ -68,8 +88,9 @@ class App extends Component {
       if (e.throwDirection !== Swing.DIRECTION.UP && e.throwDirection !== Swing.DIRECTION.DOWN) {
         MovieStore.removeTopMovie();
         MovieStore.addRating(toJS(movie), e.throwDirection);
+        this.setState({ showDetail: false });
       } else {
-        MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
+        this.toggleDetails();
         const target = this.refs.stack.refs[MovieStore.movies[0].id];
         const el = ReactDOM.findDOMNode(target);
         const card = this.state.stack.getCard(el);
@@ -92,12 +113,13 @@ class App extends Component {
       card.throwOut(100, 200, direction);
     }
     toggleDetails = () => {
-      console.log("show details");
+      this.setState({ showDetail: !this.state.showDetail })
       MovieStore.movies[0].inDetail = !MovieStore.movies[0].inDetail
     }
     render() {
         return (
             <div>
+                { this.state.showDetail && ReactDOM.createPortal(<Shim></Shim>, document.querySelector("body")) }
                 <div id="viewport">
                     <Swing
                         className="stack"
@@ -107,26 +129,28 @@ class App extends Component {
                         config={this.swingConfig}
                         throwout={this.throwout}
                         onClick={this.toggleDetails}
+
                     >
                       { MovieStore.moviesReversed.map(m =>
-                        <div className="card" key={m.id}>
-                          {m.inDetail ?
-                            <BouncyDiv className="card-details">
-                                <img alt="Poster" src={m.details.poster_url} />
-                                <Card
-                                  title={ MovieStore.movies[0].details.title}
-                                  subtitle={ MovieStore.movies[0].details.tagline}
-                                  duration={MovieStore.movies[0].details.runtime}
-                                  rating={MovieStore.movies[0].details.vote_average / 2}
-                                  />
-                            </BouncyDiv>
-                          :
-                            <div>
-                              <img alt="Poster" src={m.details.poster_url} />
-                          </div>
-                          }
-                        </div>
-                      )}
+                          <ThrowableCard detailed={m.inDetail} key={m.id} elevation={15}>
+                            {
+                              m.inDetail ?
+                              (<BouncyDiv className="card-details">
+                                  <Card
+                                    key={m.id}
+                                    style={{ fontSize: 14 }}
+                                    title={ MovieStore.movies[0].details.title}
+                                    subtitle={ MovieStore.movies[0].details.tagline}
+                                    duration={MovieStore.movies[0].details.runtime}
+                                    rating={MovieStore.movies[0].details.vote_average / 2}
+                                    posterUrl={m.details.poster_url}
+                                    />
+                              </BouncyDiv>)
+                            :
+                            (<ImageCard src={m.details.poster_url} />)
+                            }
+                          </ThrowableCard>)
+                      }
                     </Swing>
                 </div>
                 { false &&

@@ -9,6 +9,8 @@
 	position: absolute;
 	top: 5px;
 	border-radius: 10px;
+	display: flex;
+	justify-content: center;
 }
 
 #viewport .card {
@@ -46,15 +48,9 @@
 
 .card div {
 	position: relative;
-	font-size: 20px;
 }
 
 .card-details {
-	width: 100%;
 	height: calc(95vh - 4rem);
-	margin: 0 auto;
-}
-
-.card-details img {
-	height: 300px;
+	display: flex;
 }

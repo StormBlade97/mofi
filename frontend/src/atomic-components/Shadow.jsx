@@ -48,7 +48,7 @@ export const getShadow = (elevation, shadowColor = grey[500]) => {
 
 const Shadow = styled.div`
     box-shadow: ${({ elevation, theme, shadowColor, primary }) =>
-        getShadow(elevation !== undefined ? elevation : 5, shadowColor || (primary && theme.primary[700]))};
+        getShadow(elevation !== undefined ? elevation : 5, shadowColor || (primary && theme.accent))};
 `;
 
 export default Shadow;

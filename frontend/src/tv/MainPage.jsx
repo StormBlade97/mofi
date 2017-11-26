@@ -29,8 +29,8 @@ export default class MainPage extends React.Component {
                     <img src="https://dodgs5cg09x7z.cloudfront.net/images/example-qr.png" width="300px" alt=""/>
                 </div>
                 <div>
-                    <Text color="black" style={{ margin: "2rem 0" }} useMonserrat={false} type="title" fontWeight="light">
-                        Code
+                    <Text color="black" style={{ margin: "2rem 0" }} type="title" fontWeight="light">
+                        CODE
                     </Text>
                     <Text color="accent" style={{ margin: "0 2rem" }} useMonserrat={false} type="display1" fontWeight="bold">
                     {this.props.code || "red-ninja"}

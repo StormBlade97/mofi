@@ -63,7 +63,7 @@ class FilterView extends React.Component {
             <Wrapper>
                 <div>
                     <Text type="display1" color="black" fontWeight="bold" gutterBottom>I'm in mood to watch</Text>
-                    <Text color="black" style={{ margin: "0 3rem" }} useMonserrat={false} type="title" fontWeight="light">Select the filters that best describe your preferences</Text>
+                    <Text color="black" style={{ margin: "0 3rem" }} useMonserrat={false} type="title" fontWeight="light">Select the filters which describe your preferences best</Text>
                 </div>
                 <div ref={instance => this.tagCloud = instance}>
                     {

@@ -69,8 +69,8 @@ class LandingPage extends React.Component {
         return (
             <Wrapper>
                 <div>
-                    <Text type="display1" color="black" fontWeight="bold" gutterBottom>Let's match the moods</Text>
-                    <Text color="black" style={{ margin: "0 3rem" }} useMonserrat={false} type="title" fontWeight="light">Enter the code you see on the main screen and start the matching!</Text>
+                    <Text type="display1" color="black" fontWeight="bold" gutterBottom>Let's match moods</Text>
+                    <Text color="black" style={{ margin: "0 3rem" }} useMonserrat={false} type="title" fontWeight="light">Enter your code and start the matching!</Text>
                 </div>
                 <CodeSection>
                     <Input style={color} onChange={this.updateCode} value={UserStore.code} placeholder="Enter your code"></Input>

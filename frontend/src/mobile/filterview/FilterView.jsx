@@ -36,11 +36,17 @@ max-width: 40rem;
 @observer
 class FilterView extends React.Component {
 
+	state = {
+		overflow: "hidden",
+	}
     componentDidMount() {
         this.tagCloud.childNodes.forEach(tagline => {
             const random = Math.round(Math.random());
-            tagline.scrollLeft = random * 100;
+            tagline.scrollLeft = random * 200;
         })
+		setTimeout(() => {
+			this.setState({overflow: "scroll"});
+		}, 500);
     }
     handleTagSelect = (tagline, label) => {
 		const selection = MovieStore.tags[tagline].tags.filter(e => e.label === label);
@@ -61,7 +67,7 @@ class FilterView extends React.Component {
                 </div>
                 <div ref={instance => this.tagCloud = instance}>
                     {
-                        Object.keys(MovieStore.tags).map(tagline => (<TagLine key={tagline}>
+                        Object.keys(MovieStore.tags).map((tagline, i) => (<TagLine key={tagline} style={{animation: i % 2 === 0 ? "slideInLeft 0.5s ease" : "slideInRight 0.5s ease", overflow: this.state.overflow}}>
                         {
 							MovieStore.tags[tagline].tags.map((tag) => <Tag onClick={() => this.handleTagSelect(tagline, tag.label)} key={tag.label} label={tag.label} active={tag.active}></Tag>)
                         }

@@ -43,7 +43,7 @@ const ThrowableCard = styled(Shadow)`
   ${ props => props.detailed && " box-shadow: none; z-index: 100; " };
 `
 
-const Shim = props => <div style={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%", height: "100%", zIndex: 10, position: "fixed", left: 0, top: 0, animation: "fadeIn 0.3s ease" }} />
+const Shim = props => <div style={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%", height: "100%", zIndex: 10, position: "fixed", left: 0, top: 0, animation: "fadeIn 0.3s ease, slideOutUp 0.5 ease" }} />
 
 @observer
 class App extends Component {
@@ -64,7 +64,7 @@ class App extends Component {
           const yConfidence = Math.min(Math.abs(yOffset) / element.offsetHeight, 1);
 
           const confidence = Math.max(xConfidence, yConfidence);
-          if (confidence > 0.4)
+          if (confidence > 0.3)
             return 1;
 
           return confidence;
@@ -91,10 +91,12 @@ class App extends Component {
         MovieStore.addRating(toJS(movie), e.throwDirection);
         this.setState({ showDetail: false });
       } else {
-        this.toggleDetails();
+        this.onCardClick();
         const target = this.refs.stack.refs[MovieStore.movies[0].id];
         const el = ReactDOM.findDOMNode(target);
+        if (!el) return;
         const card = this.state.stack.getCard(el);
+        if (!card) return;
         if (e.throwDirection === Swing.DIRECTION.DOWN) {
           card.throwIn(0, -500);
         } else {
@@ -111,7 +113,7 @@ class App extends Component {
       const el = ReactDOM.findDOMNode(target);
       const card = this.state.stack.getCard(el);
 
-      card.throwOut(100, 200, direction);
+      card.throwOut(500, 500, direction);
     }
     onCardClick = () => {
       const target = this.refs.stack.refs[MovieStore.movies[0].id];
@@ -121,8 +123,11 @@ class App extends Component {
         this.setState({ showDetail: !this.state.showDetail })
         return;
       } else if (this.state.showEntireCard === false) {
+        card.throwIn(0, 0);
+        setTimeout(() => {
+          card.destroy();
+        }, 500);
         this.setState({ showEntireCard: true })
-        card.destroy();
         return;
       } else {
         this.setState({ showDetail: !this.state.showDetail, showEntireCard: false})
@@ -139,7 +144,7 @@ class App extends Component {
           <div onClick={this.onCardClick}>
               { this.state.showEntireCard ?
                     <Card
-                            style={{ fontSize: 14 }}
+                            style={{ fontSize: 14, animation: "slideInUp 0.3s ease" }}
                             title={ MovieStore.movies[0].details.title}
                             subtitle={ MovieStore.movies[0].details.tagline}
                             duration={MovieStore.movies[0].details.runtime}
@@ -162,7 +167,7 @@ class App extends Component {
 
                     >
                       { MovieStore.moviesReversed.map(m =>
-                          <ThrowableCard detailed={this.state.showDetail} key={m.id} elevation={15}>
+                          <ThrowableCard detailed={this.state.showDetail} key={m.id} elevation={5}>
                             {
                               this.state.showDetail ?
                               (<BouncyDiv className="card-details">

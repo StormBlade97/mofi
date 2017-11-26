@@ -16,7 +16,7 @@ const Tag = styled.button`
 `
 
 const TagPill = props => <Tag {...props} active={props.active} className={props.className}>
-    <Text color={props.active ? "accent" : grey[300]}>{props.label || "Sometag"}</Text>
+    <Text color={props.active ? "accent" : grey[600]}>{props.label || "Sometag"}</Text>
 </Tag>
 
 export default TagPill

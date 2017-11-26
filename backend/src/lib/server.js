@@ -41,7 +41,7 @@ export async function createServer() {
   const app = new Koa()
   app.keys = ['afancycookiepw'];
 
-  mongoose.connect('mongodb://admin:catdog123456!@cluster0-shard-00-00-htwdg.mongodb.net:27017,cluster0-shard-00-01-htwdg.mongodb.net:27017,cluster0-shard-00-02-htwdg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
+  mongoose.connect(process.env.MONGODB || 'mongodb://admin:catdog123456!@cluster0-shard-00-00-htwdg.mongodb.net:27017,cluster0-shard-00-01-htwdg.mongodb.net:27017,cluster0-shard-00-02-htwdg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin')
         .then(() => {
             console.log("/////\nConnection established with mongo database! :)" )
             seedData()

@@ -104,6 +104,12 @@ const MovieListItem = props => (
                  <span>
                     <Icon className="material-icons">favorite_border</Icon>
                     <Text style={{ display: "inline" }} type="body" fontSize="0.9rem" fontWeight="light" color="primary">{props.likes || 0} likes</Text>
+					{ props.dislikes > 0 &&
+					<span>
+                    <Icon className="material-icons" style={{paddingLeft: "30px", color: "red"}}>thumb_down</Icon>
+                    <Text style={{ display: "inline" }} type="body" fontSize="0.9rem" fontWeight="light" color="red">{props.dislikes || 0} dislikes</Text>
+					</span>
+                }
                 </span>
                 <PlayButton></PlayButton>
             </MovieControlWrapper>

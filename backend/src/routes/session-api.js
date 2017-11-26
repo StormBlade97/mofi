@@ -241,7 +241,8 @@ import { digestTop250 } from '../lib/imdb_top250'
 
         const users = session.usernames.map(name => ({
             name,
-            avatar_url: coolNames.find(user => name === user.name).avatar_url
+            avatar_url: coolNames.find(user => name === user.name).avatar_url,
+            rated_movies: ratings.filter(r => r.username === name).length,
         }))
 
         ctx.body = { users: users, ratings: sortedAggRatings }

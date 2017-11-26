@@ -4,7 +4,7 @@ import Text from 'atomic-components/Text'
 import RawContainer from "atomic-components/CenteredPageContainer";
 import { grey } from 'material-ui/colors';
 import {observer} from 'mobx-react';
-import TVStore from './TVStore';
+import TVStore, {initTV} from './TVStore';
 
 const Container = myTacoCat(RawContainer)`
     height: 100vh;
@@ -14,12 +14,11 @@ const Container = myTacoCat(RawContainer)`
 
 @observer
 export default class MainPage extends React.Component {
-	constructor() {
-		super();
-		console.log("a");
+	componentWillMount() {
+		initTV();
 	}
 	componentDidMount() {
-		TVStore.startMonitor();
+		//TVStore.startMonitor();
 	}
 	componentWillUnmount() {
 		TVStore.stopMonitor();
@@ -59,7 +58,11 @@ export default class MainPage extends React.Component {
 				{ TVStore.usernames.length }
 				<br />
 				Ratings:
-				{ TVStore.ratings.length }
+				<div>
+				{ TVStore.movies.map(m =>
+					<img key={m.id} src={m.details.poster_url} width="100px" height="100px" />
+				)}
+				</div>
             </Container>
         )
     }

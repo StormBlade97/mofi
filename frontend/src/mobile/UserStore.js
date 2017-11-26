@@ -51,6 +51,7 @@ class UserStore
 }
 
 const store = new UserStore();
+export const hydratedStore = hydrate('user-id-store', store);
 
 //autorun(() => {
   //if(exists(store.id)) {
@@ -58,6 +59,7 @@ const store = new UserStore();
   //}
 //});
 
+export function initUserStore() {
 autorun(() => {
   if(exists(store.code) && !exists(store.id)) {
     store.requestNewUserId();
@@ -85,11 +87,10 @@ autorun(async () => {
   }
 });
 
-
-export const hydratedStore = hydrate('user-id-store', store);
 hydratedStore.then(async () => {
   store.requestNewUserId();
   store.hasBeenLoaded = true;
 })
+}
 
 export default store;

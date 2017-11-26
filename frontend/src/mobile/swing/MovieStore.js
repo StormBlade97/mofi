@@ -521,6 +521,8 @@ class MovieStore
 
 const store = new MovieStore()
 
+export function initMovieStore() {
+
 autorun(() => {
   console.log("movies changed", store.moviesReversed.slice(), store.movies.length);
   // ensure our cache is hot
@@ -540,5 +542,6 @@ autorun("addNewlyFoundDetails", () => {
     });
 })
 
+}
 
 export default store;

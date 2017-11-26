@@ -19,7 +19,7 @@ const TextBox = styled.div`
 class ListItem extends React.Component {
     render() {
         return (
-            <Wrapper>
+            <Wrapper style={this.props.style || {}}>
                 <TextBox>
                     <Text style={{ marginBottom: this.props.children ? "1.5rem" : "1rem" }} useMonserrat={false} type="title" color="accent" fontSize="0.9em" fontWeight="medium">{this.props.primary || "Primary text"}</Text>
                     { this.props.children ? this.props.children : <Text type="body" color="black">{this.props.secondary || "SecondaryText"}</Text> }

@@ -24,7 +24,7 @@ const TextBox = styled.div`
 class ListItem extends React.Component {
     render() {
         return (
-            <Wrapper>
+            <Wrapper style={this.props.style || {}}>
                 {this.props.avatarSrc && <Avatar src={this.props.avatarSrc} />}
                 <TextBox>
                     <Text useMonserrat type="subheading" color="primary" fontWeight="medium">{this.props.primary || "Primary text"}</Text>

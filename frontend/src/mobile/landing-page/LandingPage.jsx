@@ -74,8 +74,8 @@ class LandingPage extends React.Component {
                 </div>
                 <CodeSection>
                     <Input style={color} onChange={this.updateCode} value={UserStore.code} placeholder="Enter your code"></Input>
-				{ (UserStore.name && UserStore.name.length > 0) ?
-                    <ListItem avatarSrc={UserStore.avatar_url} primary="Your personal ID" secondary={UserStore.name}></ListItem>
+				{ (UserStore.name && UserStore.isValid && UserStore.name.length > 0) ?
+                    <ListItem style={{animation: "zoomIn 1s ease"}} avatarSrc={UserStore.avatar_url} primary="Your personal ID" secondary={UserStore.name}></ListItem>
                 	: null }
                 </CodeSection>
 				<Button color="primary" raised disabled={!UserStore.isValidSession} onClick={this.startClicked}>

@@ -167,7 +167,7 @@ class App extends Component {
 
                     >
                       { MovieStore.moviesReversed.map(m =>
-                          <ThrowableCard detailed={this.state.showDetail} key={m.id} elevation={15}>
+                          <ThrowableCard detailed={this.state.showDetail} key={m.id} elevation={5}>
                             {
                               this.state.showDetail ?
                               (<BouncyDiv className="card-details">

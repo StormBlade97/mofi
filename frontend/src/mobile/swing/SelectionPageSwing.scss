@@ -34,14 +34,31 @@
 	color: white;
 }
 
-#viewport .stack:nth-child(3) {
+@keyframes swingApp { 
+   20% { transform: rotate(10deg); } 
+   40% { transform: rotate(-5deg); } 
+   60% { transform: rotate(3deg); } 
+   80% { transform: rotate(-3deg); } 
+   100% { transform: rotate(0deg); } 
+} 
+
+#viewport .stack > :nth-child(1) {
 	top: 2px;
 	transform: translate(2px, 2px) rotate(0.4deg);
 }
 
-#viewport .stack:nth-child(2) {
+#viewport .stack > :nth-child(2) {
 	top: 4px;
 	transform: translate(-4px, -2px) rotate(-1deg);
+	animation-duration: 0.5s;
+	animation-name: swing2;
+	animation-timing-function: ease;
+}
+
+#viewport .stack > :nth-child(3) {
+	animation-duration: 0.5s;
+	animation-name: swing2;
+	animation-timing-function: ease;
 }
 
 .card img {

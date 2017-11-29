@@ -1,13 +1,12 @@
-Backend routes:
+# Match my Mood
+### About project
+Match my mood is my team's submission to **Hack Junction 2017** happened from 24th to 26th November, 2017 in Helsinki, Finland.
 
-See [https://github.com/wilzbach/mofi/issues/15#issuecomment-346887203]()
+The project was built within 48 hours to complete in the hackathon track **Entertainment**. We aimed at Elisa's (one of the event challenge partner) **Make my day** challenge.
 
-Mobile:
-- GET /session/:code/new-user   ->  user_id   
-- GET /session/:code/next-movie   ->  Movie (only movie_id)
-- POST /session/:code/ratings (an array of movie objects, ids, ....)
+### My contribution
+I am tasked as a Front-end developer and UI designer. I helped our principle designer with technical insight of feasible elements and implement those design into the application.
 
-TV:
-- GET /session/new    ->    session's code (do not display code yet)
-- POST /session/:code/mood   ->   (should now display code on TV client)
-- GET /session/:code/recommendations -> [10 x AggregateMovieRating]
+### More information
+The project can be accessed at [https://elisa.hackback.tech/tv](https://elisa.hackback.tech/tv)
+The team has posted a detailed manifesto here: [https://devpost.com/software/vediamo](https://devpost.com/software/vediamo)

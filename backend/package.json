@@ -31,7 +31,7 @@
     "koa-router": "^7.3.0",
     "koa-session": "^5.5.1",
     "koa-timeout": "^0.1.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.13",
     "mongoose": "^4.13.5",
     "palin": "^2.2.0",
     "yenv": "^1.0.6"
